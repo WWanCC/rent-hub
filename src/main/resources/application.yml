@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: RentHub
+
+  #  配置数据库连接信息
+  datasource:
+    url: jdbc:mysql://localhost:3306/rent_hub
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: abcd1234
+
+#mybatis配置
+mybatis-plus:
+  type-aliases-package: renthub.po
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #枚举处理器
+
+#阿里云OSS
+#aliyun:
+#  oss:
+#    endpoint:oss-cn-beijing.aliyuncs.com
+#
