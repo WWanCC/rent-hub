@@ -1,5 +1,6 @@
-package renthub.po;
+package renthub.domain.po;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -24,6 +25,7 @@ import lombok.experimental.Accessors;
 @TableName("house")
 public class House implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)

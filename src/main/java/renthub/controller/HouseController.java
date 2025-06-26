@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-import renthub.po.House;
-import renthub.po.Restult;
+import renthub.domain.po.House;
+import renthub.domain.po.Result;
 import renthub.service.HouseService;
 
 import java.util.List;
@@ -27,9 +27,8 @@ public class HouseController {
     private HouseService houseService;
 
     @GetMapping
-    public Restult list() {
+    public Result list() {
         List<House> list = houseService.list();
-        System.out.println("热重载");
-        return Restult.success(list);
+        return Result.success(list);
     }
 }

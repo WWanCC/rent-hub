@@ -1,4 +1,4 @@
-package renthub.po;
+package renthub.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;

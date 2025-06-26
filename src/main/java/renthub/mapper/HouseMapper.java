@@ -1,6 +1,6 @@
 package renthub.mapper;
 
-import renthub.po.House;
+import renthub.domain.po.House;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

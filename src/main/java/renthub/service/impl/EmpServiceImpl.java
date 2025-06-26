@@ -1,6 +1,6 @@
 package renthub.service.impl;
 
-import renthub.po.Emp;
+import renthub.domain.po.Emp;
 import renthub.mapper.EmpMapper;
 import renthub.service.EmpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
