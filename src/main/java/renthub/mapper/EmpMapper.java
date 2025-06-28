@@ -2,6 +2,7 @@ package renthub.mapper;
 
 import renthub.domain.po.Emp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import renthub.domain.query.PageQuery;
 
 /**
  * <p>
@@ -12,5 +13,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2025-06-25
  */
 public interface EmpMapper extends BaseMapper<Emp> {
+
 
 }

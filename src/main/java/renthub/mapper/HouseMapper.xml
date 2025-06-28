@@ -3,7 +3,48 @@
 <mapper namespace="renthub.mapper.HouseMapper">
     <select id="findListByQuery" resultType="java.lang.Integer">
         select house.id
-        from house join house_tag ht on house.id = ht.house_id
-
+        from house
+        <if test="pQuery.tag != null and pQuery.tag.size() > 0">
+            join (
+            select house_id from house_tag
+            where tag_id in
+            <foreach item="tagId" collection="pQuery.tag" open="(" separator="," close=")">
+                #{tagId}
+            </foreach>
+            group by house_tag.house_id <!--健壮性防御,防止数据库中有重复tagId-->
+            having count(distinct house_tag.tag_id)=#{pQuery.tag.size()}
+            ) ht on house.id=ht.house_id
+        </if>
+        <where>
+            house.status=1 <!--只找出 status=1 待租状态的房源-->
+            <if test="pQuery.regionId != null">
+                and house.region_id=#{pQuery.regionId}
+            </if>
+            <if test="pQuery.keyword != null and pQuery.keyword != ''">
+                and (
+                house.title like concat('%',#{pQuery.keyword},'%')
+                or house.address_detail like concat('%',#{pQuery.keyword},'%')
+                )
+            </if>
+            <if test="pQuery.layout != null">
+                and house.layout in
+                <foreach item="roomNum" collection="pQuery.layout" open="(" separator="," close=")">
+                    #{roomNum}
+                </foreach>
+            </if>
+            <if test="pQuery.minRent != null and pQuery.maxRent != null">
+                and house.price_per_month between #{pQuery.minRent} and #{pQuery.maxRent}
+            </if>
+        </where>
+        <choose>
+            <!-- 当客户端明确要求升序时 -->
+            <when test="pQuery.sorted != null and 'asc'.equalsIgnoreCase(pQuery.sorted)">
+                ORDER BY house.updated_at ASC
+            </when>
+            <!-- 其他所有情况（包括 sorted 为 null, 'desc', 或其他任何值），都默认按时间倒序 -->
+            <otherwise>
+                ORDER BY house.updated_at DESC
+            </otherwise>
+        </choose>
     </select>
 </mapper>
