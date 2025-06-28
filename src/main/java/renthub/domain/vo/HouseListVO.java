@@ -1,14 +1,17 @@
 package renthub.domain.vo;
 
 import lombok.Data;
+import renthub.domain.po.Tag;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class HouseListVO {
     private String image;
     private String title;
+    private Integer regionId;
     private String regionName;
     /**
      * 详细地址
@@ -24,7 +27,7 @@ public class HouseListVO {
      * 房源面积
      */
     private Integer area;
-
+    private List<Tag> tags;
     /**
      * 房间数量
      */
@@ -34,6 +37,6 @@ public class HouseListVO {
      * 0下架，1待租，2已签约
      */
     private Integer status;
-//    private List<> createdAt;
+    private LocalDateTime updatedAt;
 
 }
