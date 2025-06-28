@@ -6,6 +6,8 @@ import renthub.domain.po.House;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import renthub.domain.query.PageQuery;
 
+import java.util.List;
+
 /**
  * <p>
  * 房源 Mapper 接口
@@ -16,7 +18,7 @@ import renthub.domain.query.PageQuery;
  */
 public interface HouseMapper extends BaseMapper<House> {
 
-    Integer findListByQuery(@Param("pQuery") PageQuery pQuery);
+    List<Integer> findListByQuery(@Param("pQuery") PageQuery pQuery);
 
 //    IPage<House> listHouseIdsByCondition(PageQuery pQuery);
 

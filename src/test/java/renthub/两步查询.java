@@ -9,6 +9,8 @@ import renthub.domain.po.House;
 import renthub.domain.query.PageQuery;
 import renthub.mapper.HouseMapper;
 
+import java.util.List;
+
 @SpringBootTest
 public class 两步查询 {
     @Autowired
@@ -16,10 +18,9 @@ public class 两步查询 {
 
     @Test
     public void findListByQuery() {
-//        IPage<House> page = new Page<>(1, 10);
         PageQuery pageQuery = new PageQuery();
         pageQuery.setRegionId(1);
-        Integer listByQuery = houseMapper.findListByQuery(pageQuery);
-        System.out.println(listByQuery);
+        List<Integer> listByQuery = houseMapper.findListByQuery(pageQuery);
+        System.out.println(listByQuery.toString());
     }
 }
