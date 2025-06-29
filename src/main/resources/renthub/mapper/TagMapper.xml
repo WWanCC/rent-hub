@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renthub.mapper.TagMapper">
+
+    <select id="findTagByHouseIds" resultType="renthub.domain.dto.HouseTagDTO">
+        select ht.house_id as houseId,
+               tag.id      as tagId,
+               tag.name    as tagName
+        from tag
+                 join house_tag ht
+                      on tag.id = ht.tag_id
+        where house_id in
+        <foreach collection="houseIds" item="houseId" open="(" separator="," close=")">
+            #{houseId}
+        </foreach>
+    </select>
+</mapper>

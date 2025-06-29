@@ -19,6 +19,4 @@ import java.util.List;
 public interface HouseService extends IService<House> {
 
     IPage<HouseListVO> findHouseByPage(PageQuery pQuery);
-
-
 }

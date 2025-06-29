@@ -42,6 +42,7 @@
         <choose>
             <!-- 当客户端明确要求升序时 -->
             <when test="pQuery.sorted != null and 'asc'.equalsIgnoreCase(pQuery.sorted)">
+                <!--@ignoreSql-->
                 ORDER BY house.updated_at ASC
             </when>
             <!-- 其他所有情况（包括 sorted 为 null, 'desc', 或其他任何值），都默认按时间倒序 -->

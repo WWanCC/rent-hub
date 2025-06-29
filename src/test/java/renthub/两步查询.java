@@ -18,8 +18,9 @@ public class 两步查询 {
     @Autowired
     HouseMapper houseMapper;
 
-    @Test
+    @Test //第一步查询
     public void findListByQuery() {
+        IPage<House> page = new Page<>(1, 2);
         PageQuery pageQuery = new PageQuery();
         pageQuery.setRegionId(1);
 
@@ -36,7 +37,7 @@ public class 两步查询 {
 
 //        pageQuery.setSorted("asc");
 //        System.out.println(pageQuery.getSorted());
-        List<Integer> listByQuery = houseMapper.findListByQuery(pageQuery);
+        List<Integer> listByQuery = houseMapper.findListByQuery(page, pageQuery);
         System.out.println(listByQuery.toString());
     }
 }

@@ -2,6 +2,7 @@ package renthub.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import renthub.domain.po.House;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import renthub.domain.query.PageQuery;
@@ -17,8 +18,7 @@ import java.util.List;
  * @since 2025-06-25
  */
 public interface HouseMapper extends BaseMapper<House> {
-
-    List<Integer> findListByQuery(@Param("pQuery") PageQuery pQuery);
+    List<Integer> findListByQuery(IPage<?> page, @Param("pQuery") PageQuery pQuery);
 
 //    IPage<House> listHouseIdsByCondition(PageQuery pQuery);
 
