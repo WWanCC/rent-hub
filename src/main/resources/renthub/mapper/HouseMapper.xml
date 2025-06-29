@@ -4,7 +4,7 @@
     <select id="findListByQuery" resultType="java.lang.Integer">
         select house.id
         from house
-        <if test="pQuery.tag != null and pQuery.tag.size() > 0">
+        <if test="pQuery.tag != null and !pQuery.tag.isEmpty()">
             join (
             select house_id from house_tag
             where tag_id in
@@ -12,7 +12,7 @@
                 #{tagId}
             </foreach>
             group by house_tag.house_id <!--健壮性防御,防止数据库中有重复tagId-->
-            having count(distinct house_tag.tag_id)=#{pQuery.tag.size()}
+            having count(distinct house_tag.tag_id)=#{pQuery.tagSize}
             ) ht on house.id=ht.house_id
         </if>
         <where>
@@ -34,6 +34,9 @@
             </if>
             <if test="pQuery.minRent != null and pQuery.maxRent != null">
                 and house.price_per_month between #{pQuery.minRent} and #{pQuery.maxRent}
+            </if>
+            <if test="pQuery.minRent == null and pQuery.maxRent != null">
+                and house.price_per_month <![CDATA[<=]]> #{pQuery.maxRent}
             </if>
         </where>
         <choose>

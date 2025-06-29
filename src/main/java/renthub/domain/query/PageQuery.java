@@ -16,4 +16,14 @@ public class PageQuery {
     private BigDecimal minRent;
     private BigDecimal maxRent;
     private String sorted = "desc";
+    private Integer tagSize;  //用于记录tag标签数量,直接给XML使用
+    // 重写 setTag 方法,直接读取值
+    public void setTag(List<Integer> tag) {
+        this.tag = tag;
+        if (tag != null) {
+            this.tagSize = tag.size();
+        } else {
+            this.tagSize = 0;
+        }
+    }
 }
