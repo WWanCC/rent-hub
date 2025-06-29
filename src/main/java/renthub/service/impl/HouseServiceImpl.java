@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import renthub.convert.HouseConverter;
 import renthub.domain.dto.HouseTagDTO;
 import renthub.domain.po.House;
 import renthub.domain.po.Tag;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements HouseService {
     private final HouseMapper houseMapper;
     private final TagMapper tagMapper;
+    private final HouseConverter houseConverter;
 
     @Override //这个业务的总方法
     public IPage<HouseListVO> findHouseByPage(PageQuery pQuery) {
@@ -61,6 +63,9 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
                     return tag;
                 }, Collectors.toList())// 收集成Tag列表
         ));
+
+//        转换为HouseListVO
+        List<HouseListVO> voList = houseConverter.toVoList(houseList, collect);
 
         return null;
     }
