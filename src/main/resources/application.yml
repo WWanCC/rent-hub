@@ -16,9 +16,25 @@ mybatis-plus:
     db-config:
       id-type: auto
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#   保持注释 将其日志输出委托给SLF4J处理
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #枚举处理器
+
+# 日志配置
+logging:
+  level:
+    # 设置根日志级别为INFO，这是默认值，可以不写，但写出来更清晰
+    root: info
+    # 设置你的项目主包的日志级别为DEBUG，这样你代码中的log.debug()就能显示了
+    renthub: debug
+    # (关键) 设置MyBatis的Mapper接口日志级别为DEBUG，这样就能看到执行的SQL语句
+    renthub.mapper: warn
+  # 配置日志输出格式
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+
+
 
 #阿里云OSS
 #aliyun:
