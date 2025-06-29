@@ -1,6 +1,5 @@
 package renthub.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import renthub.domain.po.House;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.query.PageQuery;
@@ -18,5 +17,5 @@ import java.util.List;
  */
 public interface HouseService extends IService<House> {
 
-    IPage<HouseListVO> findHouseByPage(PageQuery pQuery);
+    List<HouseListVO> findHouseByPage(PageQuery pQuery);
 }

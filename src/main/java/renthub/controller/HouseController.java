@@ -12,6 +12,8 @@ import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseListVO;
 import renthub.service.HouseService;
 
+import java.util.List;
+
 
 /**
  * 房源
@@ -32,8 +34,8 @@ public class HouseController {
 //    }
 
     @GetMapping("list")
-    public Result<IPage<HouseListVO>> findHouseByPage(PageQuery pQuery) {
-        IPage<HouseListVO> houseList = houseService.findHouseByPage(pQuery);
+    public Result<List<HouseListVO>> findHouseByPage(PageQuery pQuery) {
+        List<HouseListVO> houseList = houseService.findHouseByPage(pQuery);
         return Result.success(houseList);
     }
 }

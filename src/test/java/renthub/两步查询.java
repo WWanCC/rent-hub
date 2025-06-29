@@ -37,7 +37,7 @@ public class 两步查询 {
 
 //        pageQuery.setSorted("asc");
 //        System.out.println(pageQuery.getSorted());
-        List<Integer> listByQuery = houseMapper.findListByQuery(page, pageQuery);
-        System.out.println(listByQuery.toString());
+//        List<Integer> listByQuery = houseMapper.findListByQuery(page, pageQuery);
+//        System.out.println(listByQuery.toString());
     }
 }

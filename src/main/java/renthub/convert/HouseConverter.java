@@ -10,17 +10,19 @@ import renthub.domain.vo.HouseListVO;
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring")
+import java.util.Collections; //需要手动导入,编译时需要用到的包 养成好习惯
+
+@Mapper(componentModel = "spring",
+        imports = {Collections.class}) //关键！在这里告诉MapStruct需要导入Collections类)
 public interface HouseConverter {
     @Mapping(target = "tags", expression = "java(houseToTagsMap.getOrDefault(house.getId(), Collections.emptyList()))")
     HouseListVO toVo(House house, @Context Map<Integer, List<Tag>> houseToTagsMap);
 
 
-
     /**
      * 将House列表，在tags Map的上下文中，转换为HouseListVO列表
      *
-     * @param houses 源House列表
+     * @param houses         源House列表
      * @param houseToTagsMap 包含标签信息的上下文Map
      * @return 转换后的HouseListVO列表
      */

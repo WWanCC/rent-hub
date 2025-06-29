@@ -18,7 +18,7 @@ import java.util.List;
  * @since 2025-06-25
  */
 public interface HouseMapper extends BaseMapper<House> {
-    List<Integer> findListByQuery(IPage<?> page, @Param("pQuery") PageQuery pQuery);
+    IPage<Integer> findListByQuery(IPage<?> page, @Param("pQuery") PageQuery pQuery);
 
 //    IPage<House> listHouseIdsByCondition(PageQuery pQuery);
 

@@ -26,7 +26,7 @@
                 or house.address_detail like concat('%',#{pQuery.keyword},'%')
                 )
             </if>
-            <if test="pQuery.layout != null">
+            <if test="pQuery.layout != null and !pQuery.layout.isEmpty()">
                 and house.layout in
                 <foreach item="roomNum" collection="pQuery.layout" open="(" separator="," close=")">
                     #{roomNum}
