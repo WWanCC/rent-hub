@@ -23,7 +23,7 @@ public class PageQuery extends PageParam {
     @DecimalMin(value = "0.0", message = "最高租金不能为负数")
     private BigDecimal maxRent;
     private String sorted = "desc";
-    private Integer tagSize;  //用于记录tag标签数量,直接给XML使用
+    private Integer tagSize;  //用于记录tag标签数量,直接给XML使用 (前端不使用)
 
     // 重写 setTag 方法,配合tagSize给XML取值使用
     public void setTag(List<Integer> tag) {
