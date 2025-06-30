@@ -10,14 +10,13 @@ import renthub.domain.dto.HouseTagDTO;
 import renthub.domain.po.House;
 import renthub.domain.po.Tag;
 import renthub.domain.query.PageQuery;
-import renthub.domain.vo.HouseListVO;
+import renthub.domain.vo.HouseVO;
 import renthub.mapper.HouseMapper;
 import renthub.mapper.TagMapper;
 import renthub.service.HouseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +37,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     private final HouseConverter houseConverter;
 
     @Override //这个业务的总方法
-    public List<HouseListVO> findHouseByPage(PageQuery pQuery) {
+    public IPage<HouseVO> findHouseByPage(PageQuery pQuery) {
         //声明分页
         IPage<House> page = new Page<>(pQuery.getPageNum(), pQuery.getPageSize());
         //第一次查询
@@ -46,7 +45,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         List<Integer> houseIds = listByQuery.getRecords();
         // 健壮性判断：如果一页的ID都查不出来，说明没有数据，直接返回一个空的分页对象
         if (CollectionUtils.isEmpty(houseIds)) {
-            return Collections.emptyList();
+            return new Page<>(listByQuery.getCurrent(), listByQuery.getSize(), 0);
         }
 //        第二次查询 获取分页houseId对应的信息
         List<House> houseList = this.listByIds(houseIds);
@@ -62,8 +61,16 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
                     return tag;
                 }, Collectors.toList())// 收集成Tag列表
         ));
-//        转换为HouseListVO
-        return houseConverter.toVoList(houseList, collect);
+//        转换为HouseVO
+        List<HouseVO> voList = houseConverter.toVoList(houseList, collect);
+        IPage<HouseVO> finalPage = new Page<>(
+                // 使用第一次查询的分页参数，后面的查询是对数据处理
+                listByQuery.getCurrent(), //当前页码
+                listByQuery.getSize(), // 每页数量
+                listByQuery.getTotal() //符合动态条件的总条数
+        );
+        finalPage.setRecords(voList); //在分页对象中，存入转换后的数据
+        return finalPage;
     }
 }
 

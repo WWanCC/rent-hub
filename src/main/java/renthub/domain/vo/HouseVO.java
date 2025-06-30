@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class HouseListVO {
+public class HouseVO {
     private String image;
     private String title;
     private Integer regionId;

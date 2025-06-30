@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import renthub.domain.po.House;
 import renthub.domain.po.Tag;
-import renthub.domain.vo.HouseListVO;
+import renthub.domain.vo.HouseVO;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Collections; //需要手动导入,编译时需要用到的包 �
         imports = {Collections.class}) //关键！在这里告诉MapStruct需要导入Collections类)
 public interface HouseConverter {
     @Mapping(target = "tags", expression = "java(houseToTagsMap.getOrDefault(house.getId(), Collections.emptyList()))")
-    HouseListVO toVo(House house, @Context Map<Integer, List<Tag>> houseToTagsMap);
+    HouseVO toVo(House house, @Context Map<Integer, List<Tag>> houseToTagsMap);
 
 
     /**
@@ -26,7 +26,7 @@ public interface HouseConverter {
      * @param houseToTagsMap 包含标签信息的上下文Map
      * @return 转换后的HouseListVO列表
      */
-    List<HouseListVO> toVoList(List<House> houses, @Context Map<Integer, List<Tag>> houseToTagsMap);
+    List<HouseVO> toVoList(List<House> houses, @Context Map<Integer, List<Tag>> houseToTagsMap);
 
 
 }

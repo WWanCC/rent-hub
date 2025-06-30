@@ -7,25 +7,27 @@ import java.util.List;
 
 @Data
 public class PageResult<T> {
-
     /**
-     * 当前页数据列表
+     * 当前页码
      */
-    private List<T> records;
-    /**
-     * 总记录数
-     */
-    private long total;
+    private long current;
     /**
      * 每页条数
      */
     private long size;
     /**
-     * 当前页码
+     * 符合条件的总条数
      */
-    private long current;
+    private long total;
 
-    public static <T> PageResult<T> from(IPage<T> page) {
+    /**
+     * 当前页数据列表
+     */
+    private List<T> records;
+
+    //备用转换方法，现在使用Mapstruct转换，来避免手动转换
+    public static <T> PageResult<T>
+    from(IPage<T> page) {
         PageResult<T> result = new PageResult<>();
         result.setCurrent(page.getCurrent());
         result.setSize(page.getSize());
