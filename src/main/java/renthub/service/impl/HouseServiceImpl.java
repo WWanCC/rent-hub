@@ -3,6 +3,7 @@ package renthub.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import renthub.convert.HouseConverter;
 import renthub.domain.dto.HouseTagDTO;
@@ -17,6 +18,7 @@ import renthub.service.HouseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements HouseService {
     private final HouseMapper houseMapper;
     private final TagMapper tagMapper;
@@ -37,15 +40,15 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
     @Override //这个业务的总方法
     public List<HouseListVO> findHouseByPage(PageQuery pQuery) {
+        log.debug(pQuery.getKeyword());
         //声明分页
         IPage<House> page = new Page<>(pQuery.getPageNum(), pQuery.getPageSize());
         //第一次查询
         IPage<Integer> listByQuery = houseMapper.findListByQuery(page, pQuery);
         List<Integer> houseIds = listByQuery.getRecords();
         // 健壮性判断：如果一页的ID都查不出来，说明没有数据，直接返回一个空的分页对象
-        //未验证
         if (CollectionUtils.isEmpty(houseIds)) {
-//            return new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+            return Collections.emptyList();
         }
 //        第二次查询 获取分页houseId对应的信息
         List<House> houseList = this.listByIds(houseIds);
@@ -62,8 +65,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
                 }, Collectors.toList())// 收集成Tag列表
         ));
 //        转换为HouseListVO
-        List<HouseListVO> voList = houseConverter.toVoList(houseList, collect);
-        return voList;
+        return houseConverter.toVoList(houseList, collect);
     }
 }
 
