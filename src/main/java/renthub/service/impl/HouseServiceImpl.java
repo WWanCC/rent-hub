@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 import renthub.convert.HouseConverter;
 import renthub.domain.dto.HouseTagDTO;
 import renthub.domain.po.House;
-import renthub.domain.po.Result;
 import renthub.domain.po.Tag;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseListVO;
@@ -40,7 +39,6 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
     @Override //这个业务的总方法
     public List<HouseListVO> findHouseByPage(PageQuery pQuery) {
-        log.debug(pQuery.getKeyword());
         //声明分页
         IPage<House> page = new Page<>(pQuery.getPageNum(), pQuery.getPageSize());
         //第一次查询

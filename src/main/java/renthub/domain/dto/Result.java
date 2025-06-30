@@ -1,4 +1,4 @@
-package renthub.domain.po;
+package renthub.domain.dto;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

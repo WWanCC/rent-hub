@@ -1,15 +1,13 @@
 package renthub.controller;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-import renthub.domain.po.Result;
+import renthub.domain.dto.Result;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseListVO;
 import renthub.service.HouseService;
