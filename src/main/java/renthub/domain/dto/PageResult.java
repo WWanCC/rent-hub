@@ -35,4 +35,10 @@ public class PageResult<T> {
         result.setRecords(page.getRecords());
         return result;
     }
+
+    public static <E> PageResult<E> total(Long totalValue){
+        PageResult<E> result = new PageResult<>();
+        result.setTotal(totalValue);
+        return result;
+    }
 }

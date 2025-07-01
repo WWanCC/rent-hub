@@ -72,6 +72,11 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         finalPage.setRecords(voList); //在分页对象中，存入转换后的数据
         return finalPage;
     }
+
+    @Override
+    public Long getTotalCount() {
+        return this.count();
+    }
 }
 
 

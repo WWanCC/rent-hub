@@ -17,4 +17,6 @@ import renthub.domain.vo.HouseVO;
 public interface HouseService extends IService<House> {
 
     IPage<HouseVO> findHouseByPage(PageQuery pQuery);
+
+    Long getTotalCount();
 }
