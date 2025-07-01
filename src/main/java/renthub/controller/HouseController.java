@@ -6,11 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import renthub.convert.PageConverter;
 import renthub.domain.dto.PageResult;
 import renthub.domain.dto.Result;
@@ -50,8 +47,15 @@ public class HouseController {
         return Result.success(pageResult);
     }
 
-    @GetMapping("favorites")
-    public void getFavorites(){
-
+    @PostMapping("favorites/{houseId}")
+    public void addFavorites(@PathVariable Integer houseId) {
+//        houseService.
     }
+
+    @GetMapping("favorites")
+    public void getFavorites() {
+//        LambdaQueryWrapper<>
+    }
+
+
 }
