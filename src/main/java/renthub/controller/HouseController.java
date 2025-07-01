@@ -47,15 +47,15 @@ public class HouseController {
         return Result.success(pageResult);
     }
 
-    @PostMapping("favorites/{houseId}")
-    public void addFavorites(@PathVariable Integer houseId) {
-//        houseService.
-    }
-
-    @GetMapping("favorites")
-    public void getFavorites() {
-//        LambdaQueryWrapper<>
-    }
+//    @PostMapping("favorites/{houseId}")
+//    public void addFavorites(@PathVariable Integer houseId) {
+////        houseService.
+//    }
+//
+//    @GetMapping("favorites")
+//    public void getFavorites() {
+////        LambdaQueryWrapper<>
+//    }
 
 
 }

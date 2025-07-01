@@ -1,4 +1,4 @@
-package renthub.config;
+package renthub.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -66,19 +66,27 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * --- 通用异常处理器 ---
+     * --- 通用 业务异常处理器 ，
+     * 配合业务异常 枚举---
      */
+    @ExceptionHandler(BusinessException.class)
+    public Result<?> handleBusinessException(BusinessException e) {
+        log.warn("业务逻辑异常: code={}, message={}", e.getCode(), e.getMessage());
+        return Result.error(e.getCode(), e.getMessage());
+    }
 
-//    /**
-//     * 处理自定义的业务异常 (推荐做法)
-//     * 你可以创建一个自己的异常类，如 BusinessException，来封装业务逻辑错误
-//     */
-//    @ExceptionHandler(BusinessException.class) // 假设你有一个 BusinessException.java
-//    public Result<Void> handleBusinessException(BusinessException e) {
-//        log.warn("业务逻辑异常: {}", e.getMessage());
-//        // 直接使用业务异常中定义的code和message
-//        return Result.error(e.getCode(), e.getMessage());
-//    }
+
+    /**
+     * 处理所有系统级的、非业务的异常
+     */
+    @ExceptionHandler(SystemException.class)
+    public Result<?> handleSystemException(SystemException e) {
+        // 【关键】使用 ERROR 级别记录日志，因为这是需要开发者立即关注的系统问题
+        log.error("捕获到系统级异常: {}", e.getMessage(), e); // 必须记录完整的堆栈 e
+
+        // 【关键】对前端隐藏具体的系统错误细节
+        return Result.error(e.getCode(), "系统繁忙，请稍后重试");
+    }
 
     /**
      * 处理所有未被捕获的未知异常 (必须要有)
