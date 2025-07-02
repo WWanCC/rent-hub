@@ -3,6 +3,7 @@ package renthub.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import renthub.service.HouseService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorite> implements FavoriteService {
@@ -58,7 +60,8 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
 //        所有校验通过后，开始添加收藏
         UserFavorite userFavorite = new UserFavorite(userId, houseId, LocalDateTime.now());
 
-        //防御的不是业务逻辑错误，而是：并发冲突（如唯一键重复插入），数据完整性（由数据库的NOT NULL等约束强制保证），系统级的意外（如网络、数据库硬件等基础设施问题）等
+        //防御的不是业务逻辑错误，而是：并发冲突（如唯一键重复插入），数据完整性（由数据库的NOT NULL等约束强制保证），
+        // 系统级的意外（如网络、数据库硬件等基础设施问题）等
         try {
             if (!this.save(userFavorite)) {
                 // save() 返回 false，这是一个非预期的持久化失败
@@ -76,7 +79,9 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
     public List<HouseVO> listAllUserFavorites() {
         //TODO 获取当前用户ID
         Integer userId = getCurrentUserId();
-        return this.baseMapper.findAllUserFavorite(userId);
+        List<HouseVO> allUserFavorite = this.baseMapper.findAllUserFavorite(userId);
+        log.debug("获取当前用户收藏的房源：{}", allUserFavorite.toString());
+        return allUserFavorite;
     }
 
     private Integer getCurrentUserId() {

@@ -9,7 +9,10 @@
                h.price_per_month,
                h.status,
                h.area,
-               h.layout
+               h.layout,
+               h.updated_at,
+               h.address_detail
+
         from house h
                  join user_favorite f
                       on f.house_id = h.id
