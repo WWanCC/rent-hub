@@ -3,6 +3,8 @@ package renthub.mapper;
 import renthub.domain.po.Region;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 地区表  Mapper 接口

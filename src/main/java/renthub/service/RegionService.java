@@ -2,6 +2,9 @@ package renthub.service;
 
 import renthub.domain.po.Region;
 import com.baomidou.mybatisplus.extension.service.IService;
+import renthub.domain.vo.RegionVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-07-01
  */
 public interface RegionService extends IService<Region> {
+    List<RegionVO> listAll();
 
 }

@@ -1,10 +1,17 @@
 package renthub.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import lombok.RequiredArgsConstructor;
+import renthub.convert.RegionConverter;
 import renthub.domain.po.Region;
+import renthub.domain.vo.RegionVO;
 import renthub.mapper.RegionMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import renthub.service.RegionService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,6 +22,16 @@ import org.springframework.stereotype.Service;
  * @since 2025-07-01
  */
 @Service
-public class RegionServiceImpl extends ServiceImpl<RegionMapper, Region> implements IService<Region> {
+@RequiredArgsConstructor
+public class RegionServiceImpl extends ServiceImpl<RegionMapper, Region> implements RegionService {
+    private final RegionConverter regionConverter;
 
+    @Override
+    public List<RegionVO> listAll() {
+        LambdaQueryWrapper<Region> wrapper = new LambdaQueryWrapper<>();
+        //只查询需要的
+        wrapper.select(Region::getId, Region::getName).orderByAsc(Region::getId);
+        List<Region> regions = this.list(wrapper);
+        return regionConverter.toRegionVOList(regions);
+    }
 }

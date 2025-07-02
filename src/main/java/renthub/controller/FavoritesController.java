@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import renthub.domain.dto.Result;
 import renthub.service.FavoriteService;
 
+/**
+ * 收藏夹
+ */
+
 @RestController
 @RequestMapping("users/favorites")
 @RequiredArgsConstructor
