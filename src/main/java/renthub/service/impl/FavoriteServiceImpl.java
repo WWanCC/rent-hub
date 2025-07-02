@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import renthub.domain.po.House;
 import renthub.domain.po.UserFavorite;
+import renthub.domain.vo.HouseVO;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.HouseStatusEnum;
 import renthub.exception.BusinessException;
@@ -17,6 +18,7 @@ import renthub.service.FavoriteService;
 import renthub.service.HouseService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +70,13 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
             log.error("收藏记录插入数据库时发生数据访问异常", e); // 记录原始异常
             throw new SystemException("收藏失败，请稍后重试", e); // 抛出我们自己的系统异常，并包裹原始异常
         }
+    }
+
+    @Override
+    public List<HouseVO> listAllUserFavorites() {
+        //TODO 获取当前用户ID
+        Integer userId = getCurrentUserId();
+        return this.baseMapper.findAllUserFavorite(userId);
     }
 
     private Integer getCurrentUserId() {

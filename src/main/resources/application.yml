@@ -17,7 +17,7 @@ mybatis-plus:
       id-type: auto
   configuration:
 #   保持注释 将其日志输出委托给SLF4J处理
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #枚举处理器
 

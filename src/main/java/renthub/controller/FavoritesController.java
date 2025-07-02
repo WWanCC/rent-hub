@@ -1,12 +1,12 @@
 package renthub.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import renthub.domain.dto.Result;
+import renthub.domain.vo.HouseVO;
 import renthub.service.FavoriteService;
+
+import java.util.List;
 
 /**
  * 收藏夹
@@ -23,5 +23,10 @@ public class FavoritesController {
         favoriteService.addFavorite(houseId);
         // 如果Service没有抛出任何异常，就代表整个业务流程成功
         return Result.success();
+    }
+
+    @GetMapping
+    public Result<List<HouseVO>> list() {
+        return Result.success(favoriteService.listAllUserFavorites());
     }
 }
