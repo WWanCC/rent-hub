@@ -5,6 +5,9 @@ import renthub.domain.po.House;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
+import renthub.domain.vo.TopHouseVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,4 +22,9 @@ public interface HouseService extends IService<House> {
     IPage<HouseVO> findHouseByPage(PageQuery pQuery);
 
     Long getTotalCount();
+
+    /**
+     * 获取每个区域最高价格的房源  作为推荐房源
+     */
+    List<TopHouseVO> listTopPriceInEachRegion();
 }

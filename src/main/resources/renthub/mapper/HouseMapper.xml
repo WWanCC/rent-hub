@@ -6,25 +6,26 @@
         from house
         <if test="pQuery.tag != null and !pQuery.tag.isEmpty()">
             join (
-            select house_id from house_tag
+            select house_id
+            from house_tag
             where tag_id in
             <foreach item="tagId" collection="pQuery.tag" open="(" separator="," close=")">
                 #{tagId}
             </foreach>
             group by house_tag.house_id <!--健壮性防御,防止数据库中有重复tagId-->
-            having count(distinct house_tag.tag_id)=#{pQuery.tagSize}
-            ) ht on house.id=ht.house_id
+            having count(distinct house_tag.tag_id) = #{pQuery.tagSize}
+            ) ht on house.id = ht.house_id
         </if>
         <where>
-            house.status=1 <!--只找出 status=1 待租状态的房源-->
+            house.status = 1 <!--只找出 status=1 待租状态的房源-->
             <if test="pQuery.regionId != null">
-                and house.region_id=#{pQuery.regionId}
+                and house.region_id = #{pQuery.regionId}
             </if>
             <if test="pQuery.keyword != null and pQuery.keyword != ''">
                 and (
-                house.title like concat('%',#{pQuery.keyword},'%')
-                or house.address_detail like concat('%',#{pQuery.keyword},'%')
-                )
+                    house.title like concat('%', #{pQuery.keyword}, '%')
+                        or house.address_detail like concat('%', #{pQuery.keyword}, '%')
+                    )
             </if>
             <if test="pQuery.layout != null and !pQuery.layout.isEmpty()">
                 and house.layout in
@@ -50,5 +51,24 @@
                 ORDER BY house.updated_at DESC
             </otherwise>
         </choose>
+    </select>
+
+    <select id="findTopPriceHouseInEachRegion" resultType="renthub.domain.vo.TopHouseVO">
+        WITH RankedHouses AS (SELECT h.id,
+                                     h.title,
+                                     h.image,
+                                     h.region_name,
+                                     h.price_per_month,
+                                     ROW_NUMBER() OVER (PARTITION BY h.region_id ORDER BY h.price_per_month DESC) AS rn
+                              FROM house h
+                              WHERE h.status = 1)
+        SELECT id,
+               title,
+               image,
+               region_name     AS regionName,
+               price_per_month AS pricePerMonth
+        FROM RankedHouses
+        WHERE rn = 1
+        ORDER BY pricePerMonth DESC
     </select>
 </mapper>

@@ -11,6 +11,7 @@ import renthub.domain.po.House;
 import renthub.domain.po.Tag;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
+import renthub.domain.vo.TopHouseVO;
 import renthub.mapper.HouseMapper;
 import renthub.mapper.TagMapper;
 import renthub.service.HouseService;
@@ -76,6 +77,12 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     @Override
     public Long getTotalCount() {
         return this.count();
+    }
+
+    @Override
+    public List<TopHouseVO> listTopPriceInEachRegion() {
+        // 未来如果需要缓存，就在这里添加
+        return this.baseMapper.findTopPriceHouseInEachRegion();
     }
 }
 

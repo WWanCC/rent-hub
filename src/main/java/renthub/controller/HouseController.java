@@ -14,7 +14,10 @@ import renthub.domain.dto.Result;
 import renthub.domain.po.House;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
+import renthub.domain.vo.TopHouseVO;
 import renthub.service.HouseService;
+
+import java.util.List;
 
 
 /**
@@ -29,6 +32,14 @@ import renthub.service.HouseService;
 public class HouseController {
     private final HouseService houseService;
     private final PageConverter pageConverter;
+
+    //用于 平台推荐房源(每个区域最高价格的房源)
+    @GetMapping("top-by-region")
+    public Result<List<TopHouseVO>> getTopPriceHousesInEachRegion() {
+        List<TopHouseVO> topHouse = houseService.listTopPriceInEachRegion();
+        return Result.success(topHouse);
+    }
+
 
     //用于 获取总记录数
     @GetMapping //使用Object表示 records属性无实际意义

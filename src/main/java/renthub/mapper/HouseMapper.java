@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import renthub.domain.po.House;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import renthub.domain.query.PageQuery;
+import renthub.domain.vo.TopHouseVO;
 
 import java.util.List;
 
@@ -20,7 +21,5 @@ import java.util.List;
 public interface HouseMapper extends BaseMapper<House> {
     IPage<Integer> findListByQuery(IPage<?> page, @Param("pQuery") PageQuery pQuery);
 
-//    IPage<House> listHouseIdsByCondition(PageQuery pQuery);
-
-
+    List<TopHouseVO> findTopPriceHouseInEachRegion();
 }
