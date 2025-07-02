@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class HouseVO {
+    private Integer id;
     private String image;
     private String title;
     private Integer regionId;

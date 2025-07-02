@@ -50,8 +50,10 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         }
 //        第二次查询 获取分页houseId对应的信息
         List<House> houseList = this.listByIds(houseIds);
+        log.debug("第二次查询，获取分页对应的house：{}", houseList.toString());
         //第三次查询
         List<HouseTagDTO> htDAOList = tagMapper.findTagByHouseIds(houseIds);
+        log.debug("第三次查询，<HouseTagDTO>数据：{}", htDAOList.toString());
 
         //组装数据
         Map<Integer, List<Tag>> collect = htDAOList.stream().collect(Collectors.groupingBy(HouseTagDTO::getHouseId,
@@ -64,6 +66,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         ));
 //        转换为HouseVO
         List<HouseVO> voList = houseConverter.toVoList(houseList, collect);
+        log.debug("组装HouseTag和House 转换后的houseVO：{}", voList.toString());
         IPage<HouseVO> finalPage = new Page<>(
                 // 使用第一次查询的分页参数，后面的查询是对数据处理
                 listByQuery.getCurrent(), //当前页码
