@@ -9,6 +9,15 @@ spring:
     username: root
     password: abcd1234
 
+  # --- Redis 连接配置 ---
+  # Spring Boot 的 Redis 连接配置 (Sa-Token 会自动使用这里的配置)
+  data:
+    redis:
+      host: localhost     # Redis 服务器地址
+      port: 6379          # Redis 服务器端口
+      # password:          # 如果 Redis 有密码，在这里取消注释并填写
+      database: 0         # 使用 Redis 的 0 号数据库
+
 #mybatis配置
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -17,7 +26,7 @@ mybatis-plus:
       id-type: auto
   configuration:
 #   保持注释 将其日志输出委托给SLF4J处理
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #枚举处理器
 
@@ -29,17 +38,14 @@ logging:
     # 设置你的项目主包的日志级别为DEBUG，这样你代码中的log.debug()就能显示了
     renthub: debug
     # (关键) 设置MyBatis的Mapper接口日志级别为DEBUG，这样就能看到执行的SQL语句
-    renthub.mapper: warn
+    renthub.mapper: debug
   # 配置日志输出格式
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
 
 
-
-
-
-
-
+server:
+  port: 8080 # 你的 Spring Boot 项目运行的端口
 
 
 #阿里云OSS
