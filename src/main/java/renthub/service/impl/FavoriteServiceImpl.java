@@ -32,8 +32,8 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
      *
      * @param houseId 要收藏的房源ID
      */
-    @Transactional
     @Override
+    @Transactional
     public void addFavorite(Integer houseId) {
         // TODO 获取当前用户ID
         //暂时写死
