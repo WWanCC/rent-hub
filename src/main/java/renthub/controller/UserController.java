@@ -26,4 +26,10 @@ public class UserController {
         return Result.success();
     }
 
+    //post可以配合https加密，且对服务器产生影响（不同token,不具备幂等性)，因此使用post
+    @PostMapping("/login")
+    public Result<String> login(@RequestBody @Validated UserLoginDTO loginDTO) {
+        return Result.success(userService.login(loginDTO));
+    }
+
 }

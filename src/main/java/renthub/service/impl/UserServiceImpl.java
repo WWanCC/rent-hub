@@ -47,14 +47,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public String login(UserLoginDTO loginDTO) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(User::getPhone, loginDTO.getPhone());
+        wrapper.eq(User::getPhone, loginDTO.getPhone())
+                .eq(User::getStatus, UserStatusEnum.NORMAL);
 
         User user = userMapper.selectOne(wrapper);
         //为了安全起见，不对用户不存在和密码错误做区分，统一返回“手机号或密码错误”
-        if (user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPassword()))
-        {
-            throw new BusinessException(BusinessExceptionStatusEnum.INVALID_CREDENTIALS, "手机号或密码错误！");
+        if (user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            throw new BusinessException(BusinessExceptionStatusEnum.INVALID_CREDENTIALS, "用户名或密码错误");
         }
-            return "";
+
+        //TODO
+        // 4. 使用 Sa-Token 登录
+        // 将用户ID和登录类型传递给 Sa-Token 进行登录
+        return "";
     }
 }
