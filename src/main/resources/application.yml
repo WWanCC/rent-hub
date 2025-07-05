@@ -63,24 +63,25 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+  # jwt秘钥
+  jwt-secret-key: Bai5
 
-  # C端用户 LoginType 配置
-  user:
-    token-name: user_token # 用户端token名称
-    timeout: 2592000 # 30天
-    is-concurrent: true # 用户端允许多端登录
 
-  # B端员工 LoginType 配置
-  emp:
-    token-name: emp_token # 员工端token名称
-    timeout: 86400 # 1天
-    is-concurrent: false # 员工端不允许多端登录，后登录踢掉前登录
 
-#  # JWT 模式的核心配置
-#这里配置的秘钥后,无法读取
-#  jwt:
-#    # 秘钥，请务必修改为一个复杂且保密的字符串
-#    secret-key: "Bai5"
+
+#  # C端用户 LoginType 配置
+#  user:
+#    token-name: user_token # 用户端token名称
+#    timeout: 2592000 # 30天
+#    is-concurrent: true # 用户端允许多端登录
+#
+#  # B端员工 LoginType 配置
+#  emp:
+#    token-name: emp_token # 员工端token名称
+#    timeout: 86400 # 1天
+#    is-concurrent: false # 员工端不允许多端登录，后登录踢掉前登录
+
+
 
 
 #阿里云OSS
