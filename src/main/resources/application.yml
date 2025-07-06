@@ -36,6 +36,10 @@ spring:
           max-idle: 10
           # 连接池中的最小空闲连接
           min-idle: 0
+  graphql:
+    cors:
+      allowed-origins: http://localhost:5173
+
 
 #mybatis配置
 mybatis-plus:
@@ -82,6 +86,8 @@ sa-token:
   is-log: true
   # jwt秘钥
   jwt-secret-key: Bai5
+
+
 
 
 #  # C端用户 LoginType 配置
