@@ -1,5 +1,7 @@
 package renthub.service.impl;
 
+import cn.dev33.satoken.jwt.SaJwtUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -7,11 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import renthub.auth.StpKit;
 import renthub.domain.po.House;
 import renthub.domain.po.UserFavorite;
 import renthub.domain.vo.HouseVO;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.HouseStatusEnum;
+import renthub.enums.LoginTypeEnum;
 import renthub.exception.BusinessException;
 import renthub.exception.SystemException;
 import renthub.mapper.FavoriteMapper;
@@ -35,9 +39,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
     @Override
     @Transactional
     public void addFavorite(Integer houseId) {
-        // TODO 获取当前用户ID
-        //暂时写死
-        Integer userId = 1;
+        Integer userId = getCurrentUserId();
 
         // 检查被收藏房源 是否(存在) 待租状态
         LambdaQueryWrapper<House> houseExistWrapper = new LambdaQueryWrapper<>();
@@ -77,7 +79,6 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
 
     @Override
     public List<HouseVO> listAllUserFavorites() {
-        //TODO 获取当前用户ID
         Integer userId = getCurrentUserId();
         List<HouseVO> allUserFavorite = this.baseMapper.findAllUserFavorite(userId);
         log.debug("获取当前用户收藏的房源：{}", allUserFavorite.toString());
@@ -85,8 +86,6 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
     }
 
     private Integer getCurrentUserId() {
-        // 示例实现，请替换为您的真实逻辑
-        //TODO 是否需要获取当前用户ID的方法?
-        return 1;
+        return StpKit.USER.getLoginIdAsInt();
     }
 }

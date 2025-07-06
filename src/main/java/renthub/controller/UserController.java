@@ -53,6 +53,7 @@ public class UserController {
         StpKit.USER.getTokenValue();
         log.warn("用户登录是否：{}", StpKit.USER.isLogin());
         log.warn("用户token：{}", StpKit.USER.getTokenValue());
+        log.warn("用户LoginId：{}", StpKit.USER.getLoginId());
         return Result.success(StpKit.USER.getTokenValue());
     }
 }
