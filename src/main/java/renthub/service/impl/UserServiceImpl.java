@@ -1,9 +1,7 @@
 package renthub.service.impl;
 
-import cn.dev33.satoken.stp.SaLoginModel;
-import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
-import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import renthub.auth.StpKit;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
 import renthub.enums.BusinessExceptionStatusEnum;
-import renthub.enums.LoginTypeEnum;
 import renthub.enums.UserStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.exception.SystemException;
@@ -54,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public String login(UserLoginDTO loginDTO) {
+    public SaTokenInfo login(UserLoginDTO loginDTO) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getPhone, loginDTO.getPhone())
                 .eq(User::getStatus, UserStatusEnum.NORMAL);
@@ -66,10 +63,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         //使用StpKit.USER 登录
         StpKit.USER.login(user.getId(), new SaLoginParameter()
-                .setExtra("phone", user.getPhone()));
+                .setExtra("phone", user.getPhone())
+                .setExtra("userId", user.getId())
+        );
 
         log.debug("用户登录成功，用户账户：{}，用户token：{}", user.getPhone(), StpKit.USER.getTokenValue());
-        return StpKit.USER.getTokenValue();// 获取当前 'user' 体系的 Token
+        return StpKit.USER.getTokenInfo();// 获取当前 'user' 体系的 Token
     }
 
     //注销 登出

@@ -1,5 +1,6 @@
 package renthub.service;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
@@ -18,6 +19,6 @@ public interface UserService extends IService<User> {
      * @param loginDTO 登录请求数据 (手机号和明文密码)
      * @return 登录成功后的Token字符串
      */
-    String login(UserLoginDTO loginDTO);
+    SaTokenInfo login(UserLoginDTO loginDTO);
     void logout();
 }
