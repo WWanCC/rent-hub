@@ -3,6 +3,7 @@ package renthub.config;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
+import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpLogic;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
@@ -28,4 +29,6 @@ public class SaTokenConfigure implements WebMvcConfigurer {
     public StpLogic getStpLogicJwt() {
         return new StpLogicJwtForSimple(); //这个模式会把token格式换成jwt用于存储辅助信息，但是鉴权读取redis管理的session（包括token时间）
     }
+
+
 }

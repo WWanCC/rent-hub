@@ -68,8 +68,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         StpKit.USER.login(user.getId(), new SaLoginParameter()
                 .setExtra("phone", user.getPhone()));
 
-
         log.debug("用户登录成功，用户账户：{}，用户token：{}", user.getPhone(), StpKit.USER.getTokenValue());
         return StpKit.USER.getTokenValue();// 获取当前 'user' 体系的 Token
+    }
+
+    //注销 登出
+    @Override
+    public void logout() {
+        StpKit.USER.logout();
     }
 }

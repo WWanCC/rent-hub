@@ -6,10 +6,8 @@ import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import renthub.auth.StpKit;
 import renthub.domain.dto.Result;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.vo.LoginVO;
@@ -41,8 +39,10 @@ public class UserController {
         return Result.success(loginVO);
     }
 
+    //注销 登出
     @PostMapping("/logout")
     public Result<Void> logout() {
+        userService.logout();
         return Result.success();
     }
 }

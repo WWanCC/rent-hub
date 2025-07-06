@@ -19,4 +19,5 @@ public interface UserService extends IService<User> {
      * @return 登录成功后的Token字符串
      */
     String login(UserLoginDTO loginDTO);
+    void logout();
 }

@@ -16,7 +16,7 @@ public class StpKit {
     /**
      * Emp 会话对象，管理 Emp 表所有账号的登录、权限认证
      */
-    public static final StpLogic EMP = new StpLogic("emp");
+    public static final StpLogic EMP = new StpLogicJwtForSimple("emp");
 
     /**
      * User 会话对象，管理 User 表所有账号的登录、权限认证
