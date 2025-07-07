@@ -3,6 +3,7 @@ package renthub.service.impl;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import renthub.auth.StpKit;
+import renthub.domain.dto.UpdateUserProfileDTO;
 import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
@@ -23,7 +25,6 @@ import renthub.mapper.UserDetailMapper;
 import renthub.mapper.UserMapper;
 import renthub.service.UserService;
 
-import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -98,5 +99,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userDetailMapper.insert(userDetail);
     }
 
+    @Override
+    @Transactional
+    public void updateUserDetailInfo(UpdateUserProfileDTO update) {
+        Integer userId = StpKit.USER.getLoginIdAsInt();
+        LambdaUpdateWrapper<UserDetail> userDetailWrapper = new LambdaUpdateWrapper<>();
+        userDetailWrapper.eq(UserDetail::getUserId, userId)
+                .set(update.getRealName() != null, UserDetail::getRealName, update.getRealName());
 
+        if (userDetailWrapper.getSqlSet() != null && userDetailWrapper.getSqlSet().isEmpty()) {
+            userDetailMapper.update(null, userDetailWrapper);
+        }
+
+        LambdaUpdateWrapper<User> userWrapper = new LambdaUpdateWrapper<>();
+        userWrapper.eq(User::getId, userId)
+                .set(update.getPhone() != null, User::getPhone, update.getPhone())
+                .set(User::getUpdatedAt, LocalDateTime.now());
+        if (update.getPassword() != null) {
+            userWrapper.set(User::getPassword, passwordEncoder.encode(update.getPassword()));
+        }
+        if (userWrapper.getSqlSet() != null && userWrapper.getSqlSet().isEmpty()) {
+            userMapper.update(null, userWrapper);
+        }
+    }
 }

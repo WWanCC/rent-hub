@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import renthub.auth.StpKit;
 import renthub.domain.dto.Result;
+import renthub.domain.dto.UpdateUserProfileDTO;
 import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.vo.LoginVO;
@@ -57,6 +58,13 @@ public class UserController {
     @PostMapping("detailInfo")
     public Result<Void> detailInfo(@RequestBody @Validated UserDetailInfoDTO userDetailInfoDTO) {
         userService.completeUserDetailInfo(userDetailInfoDTO);
+        return Result.success();
+    }
+
+    @PutMapping("updetailInfo")
+    public Result<Void> updateDetailInfo(@RequestBody @Validated UpdateUserProfileDTO updateDetail) {
+        userService.updateUserDetailInfo(updateDetail);
+        log.debug("更新用户详情成功");
         return Result.success();
     }
 }
