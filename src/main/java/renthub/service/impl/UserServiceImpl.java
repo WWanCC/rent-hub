@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import renthub.auth.StpKit;
-import renthub.domain.dto.UpdateUserProfileDTO;
+import renthub.domain.dto.UserProfileDTO;
 import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
@@ -101,16 +101,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    public void updateUserDetailInfo(UpdateUserProfileDTO update) {
+    public void updateUserProfile(UserProfileDTO update) {
+        log.debug("进入{}", "updateUserProfile");
         Integer userId = StpKit.USER.getLoginIdAsInt();
         LambdaUpdateWrapper<UserDetail> userDetailWrapper = new LambdaUpdateWrapper<>();
         userDetailWrapper.eq(UserDetail::getUserId, userId)
                 .set(update.getRealName() != null, UserDetail::getRealName, update.getRealName());
 
-        if (userDetailWrapper.getSqlSet() != null && userDetailWrapper.getSqlSet().isEmpty()) {
+        if (userDetailWrapper.getSqlSet() != null && !userDetailWrapper.getSqlSet().isEmpty()) {
             userDetailMapper.update(null, userDetailWrapper);
         }
-
+        log.debug("执行{}", " userDetailMapper.update");
         LambdaUpdateWrapper<User> userWrapper = new LambdaUpdateWrapper<>();
         userWrapper.eq(User::getId, userId)
                 .set(update.getPhone() != null, User::getPhone, update.getPhone())
@@ -118,8 +119,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (update.getPassword() != null) {
             userWrapper.set(User::getPassword, passwordEncoder.encode(update.getPassword()));
         }
-        if (userWrapper.getSqlSet() != null && userWrapper.getSqlSet().isEmpty()) {
+        if (userWrapper.getSqlSet() != null && !userWrapper.getSqlSet().isEmpty()) {
             userMapper.update(null, userWrapper);
         }
+        log.debug("执行{}", " userMapper.update");
+        log.debug("离开{}", "updateUserProfile");
     }
 }
