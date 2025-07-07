@@ -1,16 +1,13 @@
 package renthub.controller;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.hutool.json.JSONObject;
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTPayload;
-import cn.hutool.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import renthub.auth.StpKit;
 import renthub.domain.dto.Result;
+import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.vo.LoginVO;
 import renthub.service.UserService;
@@ -55,5 +52,11 @@ public class UserController {
         log.warn("用户token：{}", StpKit.USER.getTokenValue());
         log.warn("用户LoginId：{}", StpKit.USER.getLoginId());
         return Result.success(StpKit.USER.getTokenValue());
+    }
+
+    @PostMapping("detailInfo")
+    public Result<Void> detailInfo(@RequestBody @Validated UserDetailInfoDTO userDetailInfoDTO) {
+        userService.completeUserDetailInfo(userDetailInfoDTO);
+        return Result.success();
     }
 }

@@ -6,19 +6,24 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import renthub.auth.StpKit;
+import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
+import renthub.domain.po.UserDetail;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.UserStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.exception.SystemException;
+import renthub.mapper.UserDetailMapper;
 import renthub.mapper.UserMapper;
 import renthub.service.UserService;
 
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -26,6 +31,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private final UserMapper userMapper;
+    private final UserDetailMapper userDetailMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -76,4 +82,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void logout() {
         StpKit.USER.logout();
     }
+
+    @Override
+    public void completeUserDetailInfo(UserDetailInfoDTO userDetailInfoDTO) {
+        Integer userId = StpKit.USER.getLoginIdAsInt();
+
+        LambdaQueryWrapper<UserDetail> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserDetail::getUserId, userId);
+        if (userDetailMapper.exists(wrapper)) {
+            throw new BusinessException(HttpStatus.CONFLICT.value(), "用户详情信息已填写");
+        }
+
+        UserDetail userDetail = new UserDetail().setUserId(userId)
+                .setRealName(userDetailInfoDTO.getRealName()).setIdentityCardId(userDetailInfoDTO.getIdentityCardId());
+        userDetailMapper.insert(userDetail);
+    }
+
+
 }

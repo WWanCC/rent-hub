@@ -1,18 +1,12 @@
 package renthub.config;
 
-import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
-import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpLogic;
-import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import renthub.auth.StpKit;
-import renthub.enums.LoginTypeEnum;
 
 @Configuration
 public class SaTokenConfigure implements WebMvcConfigurer {

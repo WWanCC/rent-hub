@@ -23,4 +23,5 @@ public class StpKit {
      */
     public static final StpLogic USER = new StpLogicJwtForSimple("user");
 
+
 }

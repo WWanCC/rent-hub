@@ -1,10 +1,9 @@
 package renthub.domain.po;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -25,13 +24,13 @@ public class UserDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("user_id")
+    @TableId
     private Integer userId;
 
     /**
      * 用户身份证号
      */
-    @TableField("identity_card_id")
+    @TableField(value = "identity_card_id", updateStrategy = FieldStrategy.NEVER) //标记字段不能更新
     private String identityCardId;
 
     /**

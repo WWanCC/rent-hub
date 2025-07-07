@@ -2,6 +2,7 @@ package renthub.service;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
 
@@ -21,4 +22,7 @@ public interface UserService extends IService<User> {
      */
     SaTokenInfo login(UserLoginDTO loginDTO);
     void logout();
+
+
+    void completeUserDetailInfo(UserDetailInfoDTO userDetailInfoDTO);
 }
