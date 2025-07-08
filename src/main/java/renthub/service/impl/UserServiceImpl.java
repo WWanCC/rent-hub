@@ -17,6 +17,7 @@ import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
 import renthub.domain.po.UserDetail;
+import renthub.domain.vo.UserProfileVO;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.UserStatusEnum;
 import renthub.exception.BusinessException;
@@ -130,5 +131,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Boolean isCompleteUserProfile() {
         Integer userId = StpKit.USER.getLoginIdAsInt();
         return userDetailMapper.exists(new LambdaQueryWrapper<UserDetail>().eq(UserDetail::getUserId, userId));
+    }
+
+    @Override
+    public UserProfileVO getUserProfile() {
+        Integer userId = StpKit.USER.getLoginIdAsInt();
+        return userMapper.queryPhoneRealNameIdentityCardIdByUserIdAfter(userId);
     }
 }

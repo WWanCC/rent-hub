@@ -6,6 +6,7 @@ import renthub.domain.dto.UserProfileDTO;
 import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
+import renthub.domain.vo.UserProfileVO;
 
 public interface UserService extends IService<User> {
     /**
@@ -31,4 +32,6 @@ public interface UserService extends IService<User> {
     void updateUserProfile(UserProfileDTO userProfileDTO);
 
     Boolean isCompleteUserProfile();
+
+    UserProfileVO getUserProfile();
 }

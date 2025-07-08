@@ -11,6 +11,7 @@ import renthub.domain.dto.UserProfileDTO;
 import renthub.domain.dto.UserDetailInfoDTO;
 import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.vo.LoginVO;
+import renthub.domain.vo.UserProfileVO;
 import renthub.service.UserService;
 
 /**
@@ -59,6 +60,12 @@ public class UserController {
     public Result<Void> detailInfo(@RequestBody @Validated UserDetailInfoDTO userDetailInfoDTO) {
         userService.completeUserDetailInfo(userDetailInfoDTO);
         return Result.success();
+    }
+
+    @GetMapping("userProfile")
+    public Result<UserProfileVO> getUserProfile() {
+        UserProfileVO userProfile = userService.getUserProfile();
+        return Result.success(userProfile);
     }
 
     @PutMapping("userProfile")
