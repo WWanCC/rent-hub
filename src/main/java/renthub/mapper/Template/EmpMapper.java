@@ -1,8 +1,7 @@
-package renthub.mapper;
+package renthub.mapper.Template;
 
 import renthub.domain.po.Emp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import renthub.domain.query.PageQuery;
 
 /**
  * <p>

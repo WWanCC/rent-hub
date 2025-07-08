@@ -1,7 +1,7 @@
 package renthub.service.impl;
 
 import renthub.domain.po.SysMenu;
-import renthub.mapper.SysMenuMapper;
+import renthub.mapper.Template.SysMenuMapper;
 import renthub.service.ISysMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

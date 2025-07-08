@@ -1,4 +1,4 @@
-package renthub.mapper;
+package renthub.mapper.Template;
 
 import renthub.domain.po.SysMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

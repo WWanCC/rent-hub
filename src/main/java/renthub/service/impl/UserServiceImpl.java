@@ -22,7 +22,7 @@ import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.UserStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.exception.SystemException;
-import renthub.mapper.UserDetailMapper;
+import renthub.mapper.Template.UserDetailMapper;
 import renthub.mapper.UserMapper;
 import renthub.service.UserService;
 

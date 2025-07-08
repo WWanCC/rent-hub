@@ -1,7 +1,7 @@
 package renthub.service.impl;
 
 import renthub.domain.po.Emp;
-import renthub.mapper.EmpMapper;
+import renthub.mapper.Template.EmpMapper;
 import renthub.service.EmpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

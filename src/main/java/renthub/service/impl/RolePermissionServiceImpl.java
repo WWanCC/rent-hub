@@ -1,7 +1,7 @@
 package renthub.service.impl;
 
 import renthub.domain.po.RolePermission;
-import renthub.mapper.RolePermissionMapper;
+import renthub.mapper.Template.RolePermissionMapper;
 import renthub.service.IRolePermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

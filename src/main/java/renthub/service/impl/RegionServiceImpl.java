@@ -1,12 +1,11 @@
 package renthub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.IService;
 import lombok.RequiredArgsConstructor;
 import renthub.convert.RegionConverter;
 import renthub.domain.po.Region;
 import renthub.domain.vo.RegionVO;
-import renthub.mapper.RegionMapper;
+import renthub.mapper.Template.RegionMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import renthub.service.RegionService;
