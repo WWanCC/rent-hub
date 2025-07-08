@@ -29,4 +29,6 @@ public interface UserService extends IService<User> {
     void completeUserDetailInfo(UserDetailInfoDTO userDetailInfoDTO);
 
     void updateUserProfile(UserProfileDTO userProfileDTO);
+
+    Boolean isCompleteUserProfile();
 }

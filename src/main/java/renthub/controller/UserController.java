@@ -45,15 +45,15 @@ public class UserController {
         return Result.success();
     }
 
-    @GetMapping("loginId")
-    public Result<Object> getLoginId() {
-        StpKit.USER.isLogin();
-        StpKit.USER.getTokenValue();
-        log.warn("用户登录是否：{}", StpKit.USER.isLogin());
-        log.warn("用户token：{}", StpKit.USER.getTokenValue());
-        log.warn("用户LoginId：{}", StpKit.USER.getLoginId());
-        return Result.success(StpKit.USER.getTokenValue());
-    }
+//    @GetMapping("loginId")
+//    public Result<Object> getLoginId() {
+//        StpKit.USER.isLogin();
+//        StpKit.USER.getTokenValue();
+//        log.warn("用户登录是否：{}", StpKit.USER.isLogin());
+//        log.warn("用户token：{}", StpKit.USER.getTokenValue());
+//        log.warn("用户LoginId：{}", StpKit.USER.getLoginId());
+//        return Result.success(StpKit.USER.getTokenValue());
+//    }
 
     @PostMapping("detailInfo")
     public Result<Void> detailInfo(@RequestBody @Validated UserDetailInfoDTO userDetailInfoDTO) {
@@ -66,5 +66,10 @@ public class UserController {
         userService.updateUserProfile(updateDetail);
         log.debug("更新用户详情成功");
         return Result.success();
+    }
+
+    @GetMapping("isCompleteUserProfile")
+    public Result<Boolean> isCompleteUserProfile() {
+        return Result.success(userService.isCompleteUserProfile());
     }
 }

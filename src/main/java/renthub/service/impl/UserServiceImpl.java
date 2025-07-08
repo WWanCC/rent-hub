@@ -125,4 +125,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         log.debug("执行{}", " userMapper.update");
         log.debug("离开{}", "updateUserProfile");
     }
+
+    @Override
+    public Boolean isCompleteUserProfile() {
+        Integer userId = StpKit.USER.getLoginIdAsInt();
+        return userDetailMapper.exists(new LambdaQueryWrapper<UserDetail>().eq(UserDetail::getUserId, userId));
+    }
 }
