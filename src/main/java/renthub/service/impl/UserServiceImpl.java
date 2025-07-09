@@ -12,9 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import renthub.auth.StpKit;
-import renthub.domain.dto.UserProfileDTO;
-import renthub.domain.dto.UserDetailInfoDTO;
-import renthub.domain.dto.UserLoginDTO;
+import renthub.domain.query.UserProfileQuery;
+import renthub.domain.query.UserDetailInfoQuery;
+import renthub.domain.query.UserLoginQuery;
 import renthub.domain.po.User;
 import renthub.domain.po.UserDetail;
 import renthub.domain.vo.UserProfileVO;
@@ -38,7 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    public void register(UserLoginDTO registerDTO) {
+    public void register(UserLoginQuery registerDTO) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getPhone, registerDTO.getPhone());
         User existUser = userMapper.selectOne(wrapper);
@@ -59,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public SaTokenInfo login(UserLoginDTO loginDTO) {
+    public SaTokenInfo login(UserLoginQuery loginDTO) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getPhone, loginDTO.getPhone())
                 .eq(User::getStatus, UserStatusEnum.NORMAL);
@@ -86,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void completeUserDetailInfo(UserDetailInfoDTO userDetailInfoDTO) {
+    public void completeUserDetailInfo(UserDetailInfoQuery userDetailInfoQuery) {
         Integer userId = StpKit.USER.getLoginIdAsInt();
 
         LambdaQueryWrapper<UserDetail> wrapper = new LambdaQueryWrapper<>();
@@ -96,13 +96,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         UserDetail userDetail = new UserDetail().setUserId(userId)
-                .setRealName(userDetailInfoDTO.getRealName()).setIdentityCardId(userDetailInfoDTO.getIdentityCardId());
+                .setRealName(userDetailInfoQuery.getRealName()).setIdentityCardId(userDetailInfoQuery.getIdentityCardId());
         userDetailMapper.insert(userDetail);
     }
 
     @Override
     @Transactional
-    public void updateUserProfile(UserProfileDTO update) {
+    public void updateUserProfile(UserProfileQuery update) {
         log.debug("进入{}", "updateUserProfile");
         Integer userId = StpKit.USER.getLoginIdAsInt();
         LambdaUpdateWrapper<UserDetail> userDetailWrapper = new LambdaUpdateWrapper<>();

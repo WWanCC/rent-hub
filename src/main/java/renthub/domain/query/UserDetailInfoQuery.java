@@ -1,14 +1,11 @@
-package renthub.domain.dto;
+package renthub.domain.query;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
-public class UserDetailInfoDTO {
+public class UserDetailInfoQuery {
     @NotBlank(message = "真实姓名不能为空")
     @Size(max = 6, message = "真实姓名长度不能超过6位")
     private String realName;
