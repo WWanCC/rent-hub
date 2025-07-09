@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("users/favorites")
+@RequestMapping("user/favorites")
 @RequiredArgsConstructor
 public class FavoritesController {
     private final FavoriteService favoriteService;
