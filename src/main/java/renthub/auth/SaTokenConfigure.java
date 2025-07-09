@@ -22,13 +22,13 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             SaRouter.match(
                     "/user/register",
                     "/user/login",
-                    "/regions",
-                    "/houses/**"
+                    "/regions"
             ).stop();
-
+            SaRouter.match("/houses/**").matchMethod("GET").stop();
+            SaRouter.match("/houses/search").matchMethod("GET", "POST").stop();
 
             // ===================  C端用户专属接口认证 ===================
-//            SaRouter.match("/user/**").check(userAuth);
+            SaRouter.match("/user/**").check(userAuth);
 
             // ===================  B端员工专属接口认证 ===================
             SaRouter.match("/admin/**").check(empAuth);

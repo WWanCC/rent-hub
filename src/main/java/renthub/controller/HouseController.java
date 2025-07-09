@@ -51,7 +51,7 @@ public class HouseController {
 
 
     //用于 多条件分页查询
-    @GetMapping("pageList")
+    @GetMapping("search")
     public Result<PageResult<HouseVO>> searchHouseByPage(@Validated PageQuery pQuery) {
         IPage<HouseVO> PageHouseListVO = houseService.findHouseByPage(pQuery);
         PageResult<HouseVO> pageResult = pageConverter.toPageResult(PageHouseListVO);
