@@ -1,5 +1,7 @@
 package renthub.service;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
+import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.po.Emp;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-06-25
  */
 public interface EmpService extends IService<Emp> {
-
+    SaTokenInfo login(EmpLoginDTO empLoginDTO);
 }

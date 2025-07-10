@@ -22,7 +22,8 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             SaRouter.match(
                     "/user/register",
                     "/user/login",
-                    "/regions"
+                    "/regions",
+                    "/admin/login"
             ).stop();
             SaRouter.match("/houses/**").matchMethod("GET").stop();
             SaRouter.match("/houses/search").matchMethod("GET", "POST").stop();

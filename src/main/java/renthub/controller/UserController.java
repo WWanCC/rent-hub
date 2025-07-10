@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import renthub.domain.dto.Result;
 import renthub.domain.query.UserProfileQuery;
 import renthub.domain.query.UserDetailInfoQuery;
-import renthub.domain.query.UserLoginQuery;
-import renthub.domain.vo.LoginVO;
+import renthub.domain.dto.UserLoginDTO;
+import renthub.domain.vo.UserLoginVO;
 import renthub.domain.vo.UserProfileVO;
 import renthub.service.UserService;
 
@@ -25,17 +25,17 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public Result<Void> register(@RequestBody @Validated UserLoginQuery registerDTO) {
+    public Result<Void> register(@RequestBody @Validated UserLoginDTO registerDTO) {
         userService.register(registerDTO);
         return Result.success();
     }
 
     //post方法可以配合https加密，且对服务器产生影响（不同token,不具备幂等性)，因此使用post
     @PostMapping("/login")
-    public Result<LoginVO> login(@RequestBody @Validated UserLoginQuery loginDTO) {
+    public Result<UserLoginVO> login(@RequestBody @Validated UserLoginDTO loginDTO) {
         SaTokenInfo tokenInfo = userService.login(loginDTO);
-        LoginVO loginVO = new LoginVO().setPhone(loginDTO.getPhone()).setTokenInfo(tokenInfo);
-        return Result.success(loginVO);
+        UserLoginVO userLoginVO = new UserLoginVO().setPhone(loginDTO.getPhone()).setTokenInfo(tokenInfo);
+        return Result.success(userLoginVO);
     }
 
     //注销 登出

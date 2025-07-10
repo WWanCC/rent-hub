@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class LoginVO {
-    private String phone;
+public class EmpLoginVO {
+    private String username;
     private SaTokenInfo tokenInfo;
 }

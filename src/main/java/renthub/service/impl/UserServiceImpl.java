@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import renthub.auth.StpKit;
 import renthub.domain.query.UserProfileQuery;
 import renthub.domain.query.UserDetailInfoQuery;
-import renthub.domain.query.UserLoginQuery;
+import renthub.domain.dto.UserLoginDTO;
 import renthub.domain.po.User;
 import renthub.domain.po.UserDetail;
 import renthub.domain.vo.UserProfileVO;
@@ -38,7 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    public void register(UserLoginQuery registerDTO) {
+    public void register(UserLoginDTO registerDTO) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getPhone, registerDTO.getPhone());
         User existUser = userMapper.selectOne(wrapper);
@@ -59,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public SaTokenInfo login(UserLoginQuery loginDTO) {
+    public SaTokenInfo login(UserLoginDTO loginDTO) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getPhone, loginDTO.getPhone())
                 .eq(User::getStatus, UserStatusEnum.NORMAL);
