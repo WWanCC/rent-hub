@@ -1,6 +1,9 @@
 package renthub.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +37,9 @@ public class HouseController {
     private final HouseService houseService;
     private final PageConverter pageConverter;
 
+//    @SaCheckRole("BranchManager")
+//    @SaCheckPermission("*")
+//    @SaCheckLogin
     //用于 平台推荐房源(每个区域最高价格的房源)
     @GetMapping("top-by-region")
     public Result<List<TopHouseVO>> getTopPriceHousesInEachRegion() {
@@ -61,7 +67,7 @@ public class HouseController {
 
     /**
      * 新增房源
-     * @param upsertHouseDTO
+     * @param upsertHouseDTO 用于更新和新增
      * @return houseId
      */
     @PostMapping
