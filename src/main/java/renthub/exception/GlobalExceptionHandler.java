@@ -1,5 +1,6 @@
 package renthub.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +79,22 @@ public class GlobalExceptionHandler {
         return Result.error(e.getCode(), e.getMessage());
     }
 
+
+    @ExceptionHandler(NotLoginException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) // ★★★ 关键：设置HTTP响应状态码为 401 ★★★
+    public Result<?> handleNotLoginException(NotLoginException e) {
+        // 打印堆栈信息，方便后端调试
+        log.warn("捕获到未登录异常: {}", e.getMessage());
+        log.debug("未登录异常的异常类型为: {}", e.getType());
+        // 根据异常类型，精准返回前端需要的信息
+        // e.getType() 可以获取到导致异常的具体原因，例如：
+        // - "未提供token"
+        // - "token无效"
+        // - "token已过期"
+        // - "已被顶下线"
+        // - "已被踢下线"
+        return Result.error(HttpStatus.UNAUTHORIZED.value(), "认证失败，请重新登录: " + e.getMessage());
+    }
 
 
 

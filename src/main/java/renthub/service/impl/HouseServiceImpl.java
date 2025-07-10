@@ -1,18 +1,28 @@
 package renthub.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import renthub.auth.StpKit;
 import renthub.convert.HouseConverter;
+import renthub.convert.HouseConverter2;
 import renthub.domain.dto.HouseTagDTO;
 import renthub.domain.po.House;
+import renthub.domain.po.Region;
 import renthub.domain.po.Tag;
+import renthub.domain.dto.UpsertHouseDTO;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
+import renthub.enums.BusinessExceptionStatusEnum;
+import renthub.exception.BusinessException;
 import renthub.mapper.HouseMapper;
+import renthub.mapper.HouseTagMapper;
+import renthub.mapper.RegionMapper;
 import renthub.mapper.TagMapper;
 import renthub.service.HouseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -36,6 +46,9 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     private final HouseMapper houseMapper;
     private final TagMapper tagMapper;
     private final HouseConverter houseConverter;
+    private final HouseConverter2 houseConverter2;
+    private final HouseTagMapper houseTagMapper;
+    private final RegionMapper regionMapper;
 
     @Override //这个业务的总方法
     public IPage<HouseVO> findHouseByPage(PageQuery pQuery) {
@@ -86,6 +99,34 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     public List<TopHouseVO> listTopPriceInEachRegion() {
         // 未来如果需要缓存，就在这里添加
         return this.baseMapper.findTopPriceHouseInEachRegion();
+    }
+
+    @Override
+    @Transactional
+    public Integer addHouse(UpsertHouseDTO upsertHouseDTO) {
+        int loginId = StpKit.EMP.getLoginIdAsInt();
+        List<Integer> tagIds = upsertHouseDTO.getTagIds();
+        LambdaQueryWrapper<House> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(House::getRegionId, upsertHouseDTO.getRegionId()).eq(House::getAddressDetail, upsertHouseDTO.getAddressDetail());
+        if (this.exists(wrapper)) {
+            throw new BusinessException(BusinessExceptionStatusEnum.HOUSE_EXIST, "房源已存在");
+        }
+        House house = houseConverter2.toPo(upsertHouseDTO);
+        house.setCreatedByEmpId(loginId);
+        Region region = regionMapper.selectById(upsertHouseDTO.getRegionId());
+        house.setRegionName(region.getName());
+        //插入房源
+        this.save(house);
+        Integer newHouseId = house.getId();
+        List<HouseTagDTO> houseTagList = tagIds.stream().map(tagId -> {
+            HouseTagDTO houseTagDTO = new HouseTagDTO();
+            houseTagDTO.setHouseId(newHouseId);
+            houseTagDTO.setTagId(tagId);
+            return houseTagDTO;
+        }).toList();
+        //根据回填house.id 插入HouseTag
+        houseTagMapper.insertBatch(houseTagList);
+        return house.getId();
     }
 }
 

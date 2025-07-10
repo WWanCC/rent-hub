@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import renthub.convert.RegionConverter;
 import renthub.domain.po.Region;
 import renthub.domain.vo.RegionVO;
-import renthub.mapper.Template.RegionMapper;
+import renthub.mapper.RegionMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import renthub.service.RegionService;

@@ -1,10 +1,10 @@
 package renthub.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +12,7 @@ import renthub.convert.PageConverter;
 import renthub.domain.dto.PageResult;
 import renthub.domain.dto.Result;
 import renthub.domain.po.House;
+import renthub.domain.dto.UpsertHouseDTO;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
@@ -56,5 +57,16 @@ public class HouseController {
         IPage<HouseVO> PageHouseListVO = houseService.findHouseByPage(pQuery);
         PageResult<HouseVO> pageResult = pageConverter.toPageResult(PageHouseListVO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 新增房源
+     * @param upsertHouseDTO
+     * @return houseId
+     */
+    @PostMapping
+    public ResponseEntity<Result<Integer>> addHouse(@RequestBody UpsertHouseDTO upsertHouseDTO) {
+        Integer houseId = houseService.addHouse(upsertHouseDTO);
+        return new ResponseEntity<>(Result.success(houseId), HttpStatus.CREATED);
     }
 }
