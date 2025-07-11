@@ -38,11 +38,8 @@ public class HouseController {
     private final HouseService houseService;
     private final PageConverter pageConverter;
 
-//    @SaCheckLogin(type = LoginTypeEnum.EmpType)
 
-    //    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     //用于 平台推荐房源(每个区域最高价格的房源)
-    @SaCheckPermission(value = "*", type = LoginTypeEnum.EmpType)
     @GetMapping("top-by-region")
     public Result<List<TopHouseVO>> getTopPriceHousesInEachRegion() {
         List<TopHouseVO> topHouse = houseService.listTopPriceInEachRegion();
@@ -74,8 +71,21 @@ public class HouseController {
      * @return houseId
      */
     @PostMapping
+    @SaCheckLogin(type = LoginTypeEnum.EmpType)
     public ResponseEntity<Result<Integer>> addHouse(@RequestBody UpsertHouseDTO upsertHouseDTO) {
         Integer houseId = houseService.addHouse(upsertHouseDTO);
         return new ResponseEntity<>(Result.success(houseId), HttpStatus.CREATED);
+    }
+
+    /**
+     * 更新房源
+     * 不替换整个实体，按需更新属性，tag列表整个替换
+     *
+     * @param upsertHouseDTO
+     */
+    @PutMapping
+    public ResponseEntity<Result<Integer>> updateHouse(@RequestBody UpsertHouseDTO upsertHouseDTO) {
+        Integer houseId = houseService.updateHouse(upsertHouseDTO);
+        return new ResponseEntity<>(Result.success(houseId), HttpStatus.OK);
     }
 }

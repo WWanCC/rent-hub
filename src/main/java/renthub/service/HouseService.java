@@ -30,4 +30,6 @@ public interface HouseService extends IService<House> {
     List<TopHouseVO> listTopPriceInEachRegion();
 
     Integer addHouse(UpsertHouseDTO upsertHouseDTO);
+
+    Integer updateHouse(UpsertHouseDTO upsertHouseDTO);
 }

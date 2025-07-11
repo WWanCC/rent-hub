@@ -14,6 +14,7 @@ public class UpsertHouseDTO {
     private String title;
 
     private Integer regionId;
+    private String regionName;
     /**
      * 详细地址
      */

@@ -1,6 +1,7 @@
 package renthub.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.dto.Result;
 import renthub.domain.po.Emp;
 import renthub.domain.vo.EmpLoginVO;
+import renthub.enums.LoginTypeEnum;
 import renthub.service.EmpService;
 
 /**
@@ -30,6 +32,7 @@ public class EmpController {
     private final EmpService empService;
 
     @PostMapping("creat-account")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<Void>> createAccount(@RequestBody Emp emp) {
         emp.setPassword(passwordEncoder.encode(emp.getPassword()));
         empService.save(emp);

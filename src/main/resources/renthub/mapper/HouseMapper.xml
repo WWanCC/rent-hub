@@ -71,4 +71,36 @@
         WHERE rn = 1
         ORDER BY pricePerMonth DESC
     </select>
+
+    <update id="updateHouseWithoutTag">
+        update house
+        <set>
+            <if test="image != null and image!=''">
+                image = #{image},
+            </if>
+            <if test="title != null and title!=''">
+                title = #{title},
+            </if>
+            <if test="regionId != null">
+                regionId = #{regionId},
+            </if>
+            <if test="addressDetail != addressDetail and addressDetail != ''">
+                addressDetail = #{addressDetail},
+            </if>
+            <if test="pricePerMonth != null">
+                pricePerMonth = #{pricePerMonth},
+            </if>
+            <if test="area != null">
+                area = #{area},
+            </if>
+            <if test="layout != null">
+                layout = #{layout},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            updated_at = NOW()
+        </set>
+        where id=#{houseId}
+    </update>
 </mapper>

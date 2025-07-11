@@ -1,6 +1,7 @@
 package renthub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import renthub.convert.HouseConverter;
 import renthub.convert.HouseConverter2;
 import renthub.domain.dto.HouseTagDTO;
 import renthub.domain.po.House;
+import renthub.domain.po.HouseTag;
 import renthub.domain.po.Region;
 import renthub.domain.po.Tag;
 import renthub.domain.dto.UpsertHouseDTO;
@@ -127,6 +129,44 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         //根据回填house.id 插入HouseTag
         houseTagMapper.insertBatch(houseTagList);
         return house.getId();
+    }
+
+    @Override
+    @Transactional
+    public Integer updateHouse(UpsertHouseDTO upsertHouseDTO) {
+        if (upsertHouseDTO.getRegionId() != null) {
+            Region region = regionMapper.selectById(upsertHouseDTO.getRegionId());
+            if (region != null) {
+                upsertHouseDTO.setRegionName(region.getName());
+            } else {
+                throw new BusinessException(BusinessExceptionStatusEnum.ResourceNotFoundException, "地区不存在"); // 抛出业务异常，返回给前端
+            }
+        }
+//        更新house主表
+        Integer affectedRows = houseMapper.updateHouseWithoutTag(upsertHouseDTO);
+        if (affectedRows == 0) {
+            throw new RuntimeException("更新失败，房源不存在或数据未变化，ID: " + upsertHouseDTO.getHouseId());
+        }
+//        更新标签 tag 关联表
+        Integer houseId = upsertHouseDTO.getHouseId();
+        List<Integer> tagIds = upsertHouseDTO.getTagIds();
+
+        LambdaQueryWrapper<HouseTag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(HouseTag::getHouseId, houseId);
+        //先删除 house实体 的全部标签
+        houseTagMapper.delete(wrapper);
+
+        //再插入新的标签
+        if (tagIds != null && !tagIds.isEmpty()) {
+            List<HouseTagDTO> list = tagIds.stream().map(tagId -> {
+                HouseTagDTO houseTag = new HouseTagDTO();
+                houseTag.setHouseId(houseId);
+                houseTag.setTagId(tagId);
+                return houseTag;
+            }).toList();
+            houseTagMapper.insertBatch(list);
+        }
+        return houseId;
     }
 }
 
