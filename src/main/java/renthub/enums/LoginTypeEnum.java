@@ -10,6 +10,9 @@ public enum LoginTypeEnum {
     USER("user", "C端用户"),
     EMP("emp", "B端后台员工");
 
+    public static final String UserType="user";
+    public static final String EmpType="emp";
+
     private final String code;
     private final String description;
 

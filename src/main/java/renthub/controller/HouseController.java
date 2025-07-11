@@ -19,6 +19,7 @@ import renthub.domain.dto.UpsertHouseDTO;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
+import renthub.enums.LoginTypeEnum;
 import renthub.service.HouseService;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public class HouseController {
     private final HouseService houseService;
     private final PageConverter pageConverter;
 
-//    @SaCheckRole("BranchManager")
+    //    @SaCheckRole("BranchManager")
 //    @SaCheckPermission("*")
-//    @SaCheckLogin
+    @SaCheckLogin(type = LoginTypeEnum.EmpType)
     //用于 平台推荐房源(每个区域最高价格的房源)
     @GetMapping("top-by-region")
     public Result<List<TopHouseVO>> getTopPriceHousesInEachRegion() {
@@ -67,6 +68,7 @@ public class HouseController {
 
     /**
      * 新增房源
+     *
      * @param upsertHouseDTO 用于更新和新增
      * @return houseId
      */
