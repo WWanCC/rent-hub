@@ -38,10 +38,11 @@ public class HouseController {
     private final HouseService houseService;
     private final PageConverter pageConverter;
 
-    //    @SaCheckRole("BranchManager")
-//    @SaCheckPermission("*")
-    @SaCheckLogin(type = LoginTypeEnum.EmpType)
+//    @SaCheckLogin(type = LoginTypeEnum.EmpType)
+
+    //    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     //用于 平台推荐房源(每个区域最高价格的房源)
+    @SaCheckPermission(value = "*", type = LoginTypeEnum.EmpType)
     @GetMapping("top-by-region")
     public Result<List<TopHouseVO>> getTopPriceHousesInEachRegion() {
         List<TopHouseVO> topHouse = houseService.listTopPriceInEachRegion();

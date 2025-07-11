@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="renthub.mapper.UserAuthMapper">
 
-    <select id="findPermissionKeysByUserId" resultType="java.lang.String">
+    <select id="findPermissionKeysByUserId" >
         SELECT DISTINCT p.permission_key
         FROM user_role ur
                  JOIN role_permission rp ON ur.role_id = rp.role_id
@@ -10,7 +10,7 @@
         WHERE ur.user_id = #{userId}
     </select>
 
-    <select id="findRoleKeysByUserId" resultType="java.lang.String">
+    <select id="findRoleKeysByUserId">
         SELECT r.role_key
         FROM user_role ur
                  JOIN role r ON ur.role_id = r.id

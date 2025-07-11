@@ -30,7 +30,7 @@ public class StpInterfaceImpl implements StpInterface {
             Integer userId = Integer.parseInt(loginId.toString());
             return userAuthMapper.findPermissionKeysByUserId(userId);
         } else if (LoginTypeEnum.EMP.getCode().equals(loginType)) {
-            Integer empId = Integer.parseInt(loginId.toString());
+            Integer empId = Integer.parseInt(String.valueOf(loginId));
             return empAuthMapper.findPermissionKeysByEmpId(empId);
         }
         return Collections.emptyList(); // 返回空集合，防止空指针
