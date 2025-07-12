@@ -19,7 +19,9 @@ import renthub.domain.dto.UpsertHouseDTO;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
+import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.LoginTypeEnum;
+import renthub.exception.BusinessException;
 import renthub.service.HouseService;
 
 import java.util.List;
@@ -87,5 +89,21 @@ public class HouseController {
     public ResponseEntity<Result<Integer>> updateHouse(@RequestBody UpsertHouseDTO upsertHouseDTO) {
         Integer houseId = houseService.updateHouse(upsertHouseDTO);
         return new ResponseEntity<>(Result.success(houseId), HttpStatus.OK);
+    }
+
+    /**
+     * 下架房源
+     *
+     * @param houseId
+     */
+    @PutMapping("/{houseId}")
+    @SaCheckLogin(type = LoginTypeEnum.EmpType)
+    @SaCheckPermission(type = LoginTypeEnum.EmpType, value = "house:update")
+    public ResponseEntity<Result<Void>> takedownHouse(@PathVariable Integer houseId) {
+        Integer affectedRows = houseService.takedownHouse(houseId);
+        if (affectedRows == 0) {
+            throw new BusinessException(BusinessExceptionStatusEnum.ResourceNotFoundException, "无法下架：未找到ID为：" + houseId + " 的房源。");
+        }
+        return new ResponseEntity<>(Result.success(), HttpStatus.OK);
     }
 }

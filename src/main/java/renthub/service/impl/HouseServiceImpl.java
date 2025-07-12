@@ -21,6 +21,7 @@ import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
 import renthub.enums.BusinessExceptionStatusEnum;
+import renthub.enums.HouseStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.mapper.HouseMapper;
 import renthub.mapper.HouseTagMapper;
@@ -167,6 +168,13 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
             houseTagMapper.insertBatch(list);
         }
         return houseId;
+    }
+
+    @Override
+    public Integer takedownHouse(Integer houseId) {
+        LambdaUpdateWrapper<House> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(House::getId, houseId).set(House::getStatus, HouseStatusEnum.DELISTED.getCode());
+        return houseMapper.update(null, wrapper);
     }
 }
 

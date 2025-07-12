@@ -32,4 +32,6 @@ public interface HouseService extends IService<House> {
     Integer addHouse(UpsertHouseDTO upsertHouseDTO);
 
     Integer updateHouse(UpsertHouseDTO upsertHouseDTO);
+
+    Integer takedownHouse(Integer houseId);
 }
