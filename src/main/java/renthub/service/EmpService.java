@@ -4,6 +4,10 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.po.Emp;
 import com.baomidou.mybatisplus.extension.service.IService;
+import renthub.domain.po.Role;
+import renthub.domain.vo.RolePermissionsVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +19,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface EmpService extends IService<Emp> {
     SaTokenInfo login(EmpLoginDTO empLoginDTO);
+
+    void logout();
 }

@@ -14,9 +14,15 @@ import renthub.auth.StpKit;
 import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.dto.Result;
 import renthub.domain.po.Emp;
+import renthub.domain.po.Role;
 import renthub.domain.vo.EmpLoginVO;
+import renthub.domain.vo.RolePermissionsVO;
 import renthub.enums.LoginTypeEnum;
 import renthub.service.EmpService;
+import renthub.service.RolePermissionService;
+import renthub.service.RoleService;
+
+import java.util.List;
 
 /**
  * 后台管理
@@ -30,6 +36,8 @@ import renthub.service.EmpService;
 public class EmpController {
     private final PasswordEncoder passwordEncoder;
     private final EmpService empService;
+    private final RoleService roleService;
+    private final RolePermissionService rolePermissionService;
 
     @PostMapping("creat-account")
     @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
@@ -48,7 +56,19 @@ public class EmpController {
 
     @GetMapping("/logout")
     public ResponseEntity<Result<Void>> logout() {
-        StpKit.EMP.logout();
+        empService.logout();
         return ResponseEntity.ok(Result.success());
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<Result<List<Role>>> getRoles() {
+        List<Role> roles = roleService.getRoles();
+        return ResponseEntity.ok(Result.success(roles));
+    }
+
+    @GetMapping("/role/{roleId}/permissions")
+    public ResponseEntity<Result<RolePermissionsVO>> getRolePermissions(@PathVariable Integer roleId) {
+        RolePermissionsVO rolePermissions = rolePermissionService.getRolePermissions(roleId);
+        return ResponseEntity.ok(Result.success(rolePermissions));
     }
 }

@@ -8,12 +8,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import renthub.auth.StpKit;
 import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.po.Emp;
+import renthub.domain.po.Permission;
+import renthub.domain.po.Role;
+import renthub.domain.vo.RolePermissionsVO;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.mapper.EmpMapper;
+import renthub.mapper.RoleMapper;
 import renthub.service.EmpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -27,6 +33,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmpServiceImpl extends ServiceImpl<EmpMapper, Emp> implements EmpService {
     private final PasswordEncoder passwordEncoder;
+    private final RoleMapper roleMapper;
 
     @Override
     public SaTokenInfo login(EmpLoginDTO empLoginDTO) {
@@ -40,5 +47,10 @@ public class EmpServiceImpl extends ServiceImpl<EmpMapper, Emp> implements EmpSe
 
         StpKit.EMP.login(emp.getId(), new SaLoginParameter().setExtra("username", emp.getUsername()));
         return StpKit.EMP.getTokenInfo();
+    }
+
+    @Override
+    public void logout() {
+        StpKit.EMP.logout();
     }
 }

@@ -2,6 +2,7 @@ package renthub.service;
 
 import renthub.domain.po.RolePermission;
 import com.baomidou.mybatisplus.extension.service.IService;
+import renthub.domain.vo.RolePermissionsVO;
 
 /**
  * <p>
@@ -11,6 +12,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Bai5
  * @since 2025-07-08
  */
-public interface IRolePermissionService extends IService<RolePermission> {
+public interface RolePermissionService extends IService<RolePermission> {
+
+    RolePermissionsVO getRolePermissions(Integer roleId);
 
 }
