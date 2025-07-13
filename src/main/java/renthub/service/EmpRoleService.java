@@ -2,6 +2,9 @@ package renthub.service;
 
 import renthub.domain.po.EmpRole;
 import com.baomidou.mybatisplus.extension.service.IService;
+import renthub.domain.po.Role;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Bai5
  * @since 2025-07-08
  */
-public interface IEmpRoleService extends IService<EmpRole> {
+public interface EmpRoleService extends IService<EmpRole> {
 
+    List<Role> getRolesByEmpId(Integer empId);
 }

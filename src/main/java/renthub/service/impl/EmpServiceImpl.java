@@ -6,20 +6,28 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import renthub.auth.StpKit;
+import renthub.convert.RolePermissionConverter;
 import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.po.Emp;
 import renthub.domain.po.Permission;
 import renthub.domain.po.Role;
+import renthub.domain.po.RolePermission;
 import renthub.domain.vo.RolePermissionsVO;
+import renthub.domain.vo.RolesPermissionsVO;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.mapper.EmpMapper;
 import renthub.mapper.RoleMapper;
+import renthub.mapper.RolePermissionMapper;
+import renthub.service.EmpRoleService;
 import renthub.service.EmpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import renthub.service.RolePermissionService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,7 +41,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmpServiceImpl extends ServiceImpl<EmpMapper, Emp> implements EmpService {
     private final PasswordEncoder passwordEncoder;
-    private final RoleMapper roleMapper;
+    private final EmpRoleService empRoleService;
+    private final RolePermissionMapper rolePermissionMapper;
+    private final RolePermissionConverter rolePermissionConverter;
 
     @Override
     public SaTokenInfo login(EmpLoginDTO empLoginDTO) {
@@ -51,6 +61,20 @@ public class EmpServiceImpl extends ServiceImpl<EmpMapper, Emp> implements EmpSe
 
     @Override
     public void logout() {
-        StpKit.EMP.logout();
+        Object loginId = StpKit.EMP.getLoginId();
+        StpKit.EMP.logout(loginId);
+    }
+
+
+    @Override
+    public RolesPermissionsVO getEmpRolesPermissions(Integer empId) {
+        List<Role> roles = empRoleService.getRolesByEmpId(empId);
+        if (roles == null || roles.isEmpty()) {
+            return new RolesPermissionsVO(Collections.emptyList(), Collections.emptyList());
+        }
+
+        List<Integer> roleIds = roles.stream().map(Role::getId).toList();
+        List<Permission> permissions = rolePermissionMapper.getPermissions(roleIds);
+        return rolePermissionConverter.toRolesPermissionsVO(roles, permissions);
     }
 }

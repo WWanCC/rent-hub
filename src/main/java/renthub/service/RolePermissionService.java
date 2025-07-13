@@ -4,6 +4,8 @@ import renthub.domain.po.RolePermission;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.vo.RolePermissionsVO;
 
+import java.util.List;
+
 /**
  * <p>
  * 角色-权限中间表 服务类
@@ -16,4 +18,5 @@ public interface RolePermissionService extends IService<RolePermission> {
 
     RolePermissionsVO getRolePermissions(Integer roleId);
 
+    RolePermissionsVO updateRolePermissions(Integer roleId, List<Integer> permissionIds);
 }

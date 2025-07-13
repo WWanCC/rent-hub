@@ -14,9 +14,11 @@ import renthub.auth.StpKit;
 import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.dto.Result;
 import renthub.domain.po.Emp;
+import renthub.domain.po.Permission;
 import renthub.domain.po.Role;
 import renthub.domain.vo.EmpLoginVO;
 import renthub.domain.vo.RolePermissionsVO;
+import renthub.domain.vo.RolesPermissionsVO;
 import renthub.enums.LoginTypeEnum;
 import renthub.service.EmpService;
 import renthub.service.RolePermissionService;
@@ -60,15 +62,65 @@ public class EmpController {
         return ResponseEntity.ok(Result.success());
     }
 
+    /**
+     * 获取 全部 角色列表
+     *
+     * @return
+     */
     @GetMapping("/role")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<List<Role>>> getRoles() {
         List<Role> roles = roleService.getRoles();
         return ResponseEntity.ok(Result.success(roles));
     }
 
+    /**
+     * 获取 某个 角色权限列表
+     *
+     * @param roleId 角色id
+     * @return
+     */
     @GetMapping("/role/{roleId}/permissions")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<RolePermissionsVO>> getRolePermissions(@PathVariable Integer roleId) {
         RolePermissionsVO rolePermissions = rolePermissionService.getRolePermissions(roleId);
         return ResponseEntity.ok(Result.success(rolePermissions));
     }
+
+    /**
+     * 更新 某个 角色权限列表
+     *
+     * @param roleId        角色id
+     * @param permissionIds 权限id列表
+     * @return
+     */
+    @PutMapping("/role/{roleId}/permissions")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
+    public ResponseEntity<Result<RolePermissionsVO>> updateRolePermissions(@PathVariable Integer roleId, @RequestBody List<Integer> permissionIds) {
+        RolePermissionsVO rolePermissionsVO = rolePermissionService.updateRolePermissions(roleId, permissionIds);
+        return ResponseEntity.ok(Result.success(rolePermissionsVO));
+    }
+
+    /**
+     * 获取 某个 员工拥有的角色和权限列表
+     *
+     * @param empId 员工id
+     * @return
+     */
+    @GetMapping("/{empId}/roles-permissions")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
+    public ResponseEntity<Result<RolesPermissionsVO>> getEmpRolesPermissions(@PathVariable Integer empId) {
+        RolesPermissionsVO empRolesPermissions = empService.getEmpRolesPermissions(empId);
+        return ResponseEntity.ok(Result.success(empRolesPermissions));
+    }
+
+
+    @GetMapping("/my-roles-permissions")
+    public ResponseEntity<Result<RolesPermissionsVO>> getMyRolesPermissions() {
+        Integer empId = StpKit.EMP.getLoginIdAsInt();
+        RolesPermissionsVO empRolesPermissions = empService.getEmpRolesPermissions(empId);
+        return ResponseEntity.ok(Result.success(empRolesPermissions));
+    }
+
+
 }

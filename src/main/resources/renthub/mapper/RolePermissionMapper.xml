@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renthub.mapper.RolePermissionMapper">
+
+    <select id="getPermissions" resultType="renthub.domain.po.Permission">
+        select distinct permission.id, permission.permission_key, permission.name
+        from role_permission
+        join permission on role_permission.permission_id = permission.id
+        where role_id in
+        <foreach item="item" collection="roleIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

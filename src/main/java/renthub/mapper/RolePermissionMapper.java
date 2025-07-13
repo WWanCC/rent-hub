@@ -1,7 +1,11 @@
 package renthub.mapper;
 
+import org.apache.ibatis.annotations.Param;
+import renthub.domain.po.Permission;
 import renthub.domain.po.RolePermission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RolePermissionMapper extends BaseMapper<RolePermission> {
 
+    List<Permission> getPermissions(@Param("roleIds")List<Integer> roleIds);
 }
