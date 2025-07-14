@@ -63,6 +63,13 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
             throw new BusinessException(BusinessExceptionStatusEnum.ROLE_NOT_EXIST, "角色不存在");
         }
 
+        if (permissionIds != null && !permissionIds.isEmpty()) {
+            Integer realIds = permissionMapper.countByIds(permissionIds);
+            if (realIds != permissionIds.size()) {
+                throw new BusinessException(BusinessExceptionStatusEnum.PERMISSION_NOT_EXIST, "包含错误的权限");
+            }
+        }
+
         //删除 该角色的全部权限
         LambdaQueryWrapper<RolePermission> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(RolePermission::getRoleId, roleId);
@@ -79,7 +86,7 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
         }
 
         //利用 mybatis-plus 动态sql 更新所有 非 null的字段
-        Role updateRole = new Role().setUpdatedAt(LocalDateTime.now());
+        Role updateRole = new Role().setUpdatedAt(LocalDateTime.now()).setId(roleId);
         roleMapper.updateById(updateRole);
 
         return this.getRolePermissions(roleId);

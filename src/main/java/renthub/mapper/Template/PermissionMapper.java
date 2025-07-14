@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface PermissionMapper extends BaseMapper<Permission> {
     List<Permission> selectPermissionsByRoleId(Integer roleId);
+
+    Integer countByIds(List<Integer> permissionIds);
 }

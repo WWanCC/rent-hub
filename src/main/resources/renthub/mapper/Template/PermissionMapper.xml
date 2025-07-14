@@ -10,4 +10,12 @@
         where role_id = #{roleId}
         ;
     </select>
+
+    <select id="countByIds" resultType="java.lang.Integer">
+        select count(id) from permission
+        where id in
+        <foreach collection="permissionIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>
