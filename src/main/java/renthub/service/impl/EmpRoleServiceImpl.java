@@ -34,7 +34,7 @@ public class EmpRoleServiceImpl extends ServiceImpl<EmpRoleMapper, EmpRole> impl
 
     private final EmpRoleMapper empRoleMapper;
     private final RoleMapper roleMapper;
-    private final EmpService empService;
+    private final EmpMapper empMapper;
 
     @Override
     public List<Role> getRolesByEmpId(Integer empId) {
@@ -55,10 +55,10 @@ public class EmpRoleServiceImpl extends ServiceImpl<EmpRoleMapper, EmpRole> impl
 
     @Override
     @Transactional
-    public RolesPermissionsVO updateEmpRoles(Integer empId, List<Integer> roleIds) {
+    public void updateEmpRoles(Integer empId, List<Integer> roleIds) {
         LambdaQueryWrapper<Emp> empWrapper = new LambdaQueryWrapper<>();
         empWrapper.eq(Emp::getId, empId);
-        if (!empService.exists(empWrapper)) {
+        if (!empMapper.exists(empWrapper)) {
             throw new BusinessException(BusinessExceptionStatusEnum.EMP_NOT_EXIST, "该员工不存在");
         }
 
@@ -71,9 +71,9 @@ public class EmpRoleServiceImpl extends ServiceImpl<EmpRoleMapper, EmpRole> impl
             }
         }
 
-        LambdaQueryWrapper<Emp> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Emp::getId, empId);
-        empService.remove(wrapper);
+        LambdaQueryWrapper<EmpRole> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(EmpRole::getEmpId, empId);
+        empRoleMapper.delete(wrapper);
 
         if (roleIds != null && !roleIds.isEmpty()) {
             List<EmpRole> batchList = roleIds.stream().map(roleId -> {
@@ -85,6 +85,5 @@ public class EmpRoleServiceImpl extends ServiceImpl<EmpRoleMapper, EmpRole> impl
 
             this.saveBatch(batchList);
         }
-        return empService.getEmpRolesPermissions(empId);
     }
 }

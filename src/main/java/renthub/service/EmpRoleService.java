@@ -19,7 +19,7 @@ public interface EmpRoleService extends IService<EmpRole> {
 
     List<Role> getRolesByEmpId(Integer empId);
 
-    RolesPermissionsVO updateEmpRoles(Integer empId, List<Integer> roleIds);
+    void updateEmpRoles(Integer empId, List<Integer> roleIds);
 
 
 }

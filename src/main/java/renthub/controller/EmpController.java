@@ -44,7 +44,7 @@ public class EmpController {
     private final EmpRoleService empRoleService;
 
     @PostMapping("creat-account")
-    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
+//    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<Void>> createAccount(@RequestBody Emp emp) {
         emp.setPassword(passwordEncoder.encode(emp.getPassword()));
         empService.save(emp);
@@ -119,7 +119,8 @@ public class EmpController {
     @PutMapping("/{empId}/roles-permissions")
     @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<RolesPermissionsVO>> updateEmpRoles(@PathVariable Integer empId, @RequestBody List<Integer> roleIds) {
-        RolesPermissionsVO empRolesPermissions = empRoleService.updateEmpRoles(empId, roleIds);
+        empRoleService.updateEmpRoles(empId, roleIds);
+        RolesPermissionsVO empRolesPermissions = empService.getEmpRolesPermissions(empId);
         return ResponseEntity.ok(Result.success(empRolesPermissions));
     }
 
