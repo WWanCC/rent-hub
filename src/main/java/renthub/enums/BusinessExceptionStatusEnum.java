@@ -15,7 +15,8 @@ public enum BusinessExceptionStatusEnum {
     HOUSE_EXIST(40002, "房屋已存在"),
 
     ROLE_NOT_EXIST(40003, "角色不存在"),
-    PERMISSION_NOT_EXIST(40004, "权限不存在");
+    PERMISSION_NOT_EXIST(40004, "权限不存在"),
+    EMP_NOT_EXIST(40005, "员工不存在");
 
     private final int code;
     private final String description;

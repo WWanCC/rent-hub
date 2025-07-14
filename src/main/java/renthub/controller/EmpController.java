@@ -20,6 +20,7 @@ import renthub.domain.vo.EmpLoginVO;
 import renthub.domain.vo.RolePermissionsVO;
 import renthub.domain.vo.RolesPermissionsVO;
 import renthub.enums.LoginTypeEnum;
+import renthub.service.EmpRoleService;
 import renthub.service.EmpService;
 import renthub.service.RolePermissionService;
 import renthub.service.RoleService;
@@ -40,6 +41,7 @@ public class EmpController {
     private final EmpService empService;
     private final RoleService roleService;
     private final RolePermissionService rolePermissionService;
+    private final EmpRoleService empRoleService;
 
     @PostMapping("creat-account")
     @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
@@ -111,6 +113,13 @@ public class EmpController {
     @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<RolesPermissionsVO>> getEmpRolesPermissions(@PathVariable Integer empId) {
         RolesPermissionsVO empRolesPermissions = empService.getEmpRolesPermissions(empId);
+        return ResponseEntity.ok(Result.success(empRolesPermissions));
+    }
+
+    @PutMapping("/{empId}/roles-permissions")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
+    public ResponseEntity<Result<RolesPermissionsVO>> updateEmpRoles(@PathVariable Integer empId, @RequestBody List<Integer> roleIds) {
+        RolesPermissionsVO empRolesPermissions = empRoleService.updateEmpRoles(empId, roleIds);
         return ResponseEntity.ok(Result.success(empRolesPermissions));
     }
 

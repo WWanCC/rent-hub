@@ -3,6 +3,7 @@ package renthub.service;
 import renthub.domain.po.EmpRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.po.Role;
+import renthub.domain.vo.RolesPermissionsVO;
 
 import java.util.List;
 
@@ -17,4 +18,8 @@ import java.util.List;
 public interface EmpRoleService extends IService<EmpRole> {
 
     List<Role> getRolesByEmpId(Integer empId);
+
+    RolesPermissionsVO updateEmpRoles(Integer empId, List<Integer> roleIds);
+
+
 }
