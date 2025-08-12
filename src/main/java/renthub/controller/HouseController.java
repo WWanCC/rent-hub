@@ -16,6 +16,7 @@ import renthub.domain.dto.PageResult;
 import renthub.domain.dto.Result;
 import renthub.domain.po.House;
 import renthub.domain.dto.UpsertHouseDTO;
+import renthub.domain.po.Tag;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
@@ -23,6 +24,7 @@ import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.LoginTypeEnum;
 import renthub.exception.BusinessException;
 import renthub.service.HouseService;
+import renthub.service.RegionService;
 
 import java.util.List;
 
@@ -39,6 +41,7 @@ import java.util.List;
 public class HouseController {
     private final HouseService houseService;
     private final PageConverter pageConverter;
+    private final RegionService regionService;
 
 
     //用于 平台推荐房源(每个区域最高价格的房源)
@@ -105,5 +108,16 @@ public class HouseController {
             throw new BusinessException(BusinessExceptionStatusEnum.ResourceNotFoundException, "无法下架：未找到ID为：" + houseId + " 的房源。");
         }
         return new ResponseEntity<>(Result.success(), HttpStatus.OK);
+    }
+
+    /**
+     * 获取所有房源标签
+     *
+     *
+     */
+    @GetMapping("/tags")
+    public ResponseEntity<Result<List<Tag>>> getTags() {
+        List<Tag> tags = houseService.getTags();
+        return new ResponseEntity<>(Result.success(tags), HttpStatus.OK);
     }
 }

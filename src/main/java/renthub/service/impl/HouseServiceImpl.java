@@ -176,6 +176,11 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         wrapper.eq(House::getId, houseId).set(House::getStatus, HouseStatusEnum.DELISTED.getCode());
         return houseMapper.update(null, wrapper);
     }
+
+    @Override
+    public List<Tag> getTags() {
+        return tagMapper.selectList(null);
+    }
 }
 
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import renthub.domain.po.House;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.dto.UpsertHouseDTO;
+import renthub.domain.po.Tag;
 import renthub.domain.query.PageQuery;
 import renthub.domain.vo.HouseVO;
 import renthub.domain.vo.TopHouseVO;
@@ -34,4 +35,6 @@ public interface HouseService extends IService<House> {
     Integer updateHouse(UpsertHouseDTO upsertHouseDTO);
 
     Integer takedownHouse(Integer houseId);
+
+    List<Tag> getTags();
 }

@@ -16,5 +16,4 @@ import java.util.List;
  */
 public interface RegionService extends IService<Region> {
     List<RegionVO> listAll();
-
 }
