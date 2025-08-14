@@ -15,7 +15,7 @@ public class PageQuery extends PageParam {
     private Integer regionId;
     @Size(max = 30, message = "搜索关键字过长")
     private String keyword;
-    @Size(max = 4, message = "最多选择4种户型")
+//    @Size(max = 4, message = "最多选择4种户型")
     private List<Integer> layout; //户型 房间数
     private List<Integer> tag;
     @DecimalMin(value = "0.0", message = "最低租金不能为负数")

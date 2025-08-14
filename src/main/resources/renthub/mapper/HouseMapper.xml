@@ -23,15 +23,36 @@
             </if>
             <if test="pQuery.keyword != null and pQuery.keyword != ''">
                 and (
-                    house.title like concat('%', #{pQuery.keyword}, '%')
-                        or house.address_detail like concat('%', #{pQuery.keyword}, '%')
-                    )
+                house.title like concat('%', #{pQuery.keyword}, '%')
+                or house.address_detail like concat('%', #{pQuery.keyword}, '%')
+                )
             </if>
+
+
+            <!--            <if test="pQuery.layout != null and !pQuery.layout.isEmpty()">-->
+            <!--                and house.layout in-->
+            <!--                <foreach item="roomNum" collection="pQuery.layout" open="(" separator="," close=")">-->
+            <!--                    #{roomNum}-->
+            <!--                </foreach>-->
+            <!--            </if>-->
+
+            <!-- 方案二：逻辑分离型写法 (您的思路) -->
             <if test="pQuery.layout != null and !pQuery.layout.isEmpty()">
-                and house.layout in
-                <foreach item="roomNum" collection="pQuery.layout" open="(" separator="," close=")">
-                    #{roomNum}
-                </foreach>
+                and
+                <trim prefix="(" suffix=")" prefixOverrides="OR">
+                    <!-- 第一部分：处理所有不等于4的精确匹配 -->
+                    <foreach item="roomNum" collection="pQuery.layout">
+                        <if test="roomNum != 4">
+                            OR house.layout = #{roomNum}
+                        </if>
+                    </foreach>
+
+                    <!-- 第二部分：单独处理“4居及以上”的情况 -->
+                    <!-- OGNL表达式 pQuery.layout.contains(4) 判断列表是否包含元素4 -->
+                    <if test="pQuery.layout.contains(4)">
+                        OR house.layout >= 4
+                    </if>
+                </trim>
             </if>
             <if test="pQuery.minRent != null and pQuery.maxRent != null">
                 and house.price_per_month between #{pQuery.minRent} and #{pQuery.maxRent}
