@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -45,7 +46,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements HouseService {
+public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements HouseService
+{
     private final HouseMapper houseMapper;
     private final TagMapper tagMapper;
     private final HouseConverter houseConverter;
@@ -54,14 +56,16 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     private final RegionMapper regionMapper;
 
     @Override //这个业务的总方法
-    public IPage<HouseVO> findHouseByPage(PageQuery pQuery) {
+    public IPage<HouseVO> findHouseByPage(PageQuery pQuery)
+    {
         //声明分页
         IPage<House> page = new Page<>(pQuery.getPageNum(), pQuery.getPageSize());
         //第一次查询
         IPage<Integer> listByQuery = houseMapper.findListByQuery(page, pQuery);
         List<Integer> houseIds = listByQuery.getRecords();
         // 健壮性判断：如果一页的ID都查不出来，说明没有数据，直接返回一个空的分页对象
-        if (CollectionUtils.isEmpty(houseIds)) {
+        if (CollectionUtils.isEmpty(houseIds))
+        {
             return new Page<>(listByQuery.getCurrent(), listByQuery.getSize(), 0);
         }
 //        第二次查询 获取分页houseId对应的信息
@@ -83,35 +87,61 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 //        转换为HouseVO
         List<HouseVO> voList = houseConverter.toVoList(houseList, collect);
         log.debug("组装HouseTag和House 转换后的houseVO：{}", voList.toString());
+
+
+//        根据mysql处理的分页排序，重映射。确保完全一致
+        //避免丢失信息：排名相同时，MySQL可能有多重次要排序
+        // ====================================================================
+        // 核心排序步骤：在这里添加Java内存重排序逻辑
+        // ====================================================================
+
+        // 1. 将无序的voList转换为一个Map，以便通过ID快速查找，时间复杂度O(N)
+        Map<Integer, HouseVO> voMap = voList.stream()
+                .collect(Collectors.toMap(HouseVO::getId, Function.identity()));
+
+        // 2. 遍历我们有序的“蓝图”houseIds，从Map中按顺序取出VO，生成最终有序的列表，时间复杂度O(N)
+        List<HouseVO> sortedVoList = houseIds.stream()
+                .map(voMap::get)
+                .toList();
+
+
         IPage<HouseVO> finalPage = new Page<>(
                 // 使用第一次查询的分页参数，后面的查询是对数据处理
                 listByQuery.getCurrent(), //当前页码
                 listByQuery.getSize(), // 每页数量
                 listByQuery.getTotal() //符合动态条件的总条数
         );
-        finalPage.setRecords(voList); //在分页对象中，存入转换后的数据
+
+
+//        finalPage.setRecords(voList); //在分页对象中，存入转换后的数据
+        // 将排序好的数据设置到分页对象中
+        finalPage.setRecords(sortedVoList);
         return finalPage;
     }
 
     @Override
-    public Long getTotalCount() {
+    public Long getTotalCount()
+    {
         return this.count();
     }
 
     @Override
-    public List<TopHouseVO> listTopPriceInEachRegion() {
+    public List<TopHouseVO> listTopPriceInEachRegion()
+    {
         // 未来如果需要缓存，就在这里添加
         return this.baseMapper.findTopPriceHouseInEachRegion();
     }
 
     @Override
     @Transactional
-    public Integer addHouse(UpsertHouseDTO upsertHouseDTO) {
+    public Integer addHouse(UpsertHouseDTO upsertHouseDTO)
+    {
         int loginId = StpKit.EMP.getLoginIdAsInt();
         List<Integer> tagIds = upsertHouseDTO.getTagIds();
         LambdaQueryWrapper<House> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(House::getRegionId, upsertHouseDTO.getRegionId()).eq(House::getAddressDetail, upsertHouseDTO.getAddressDetail());
-        if (this.exists(wrapper)) {
+        if (this.exists(wrapper))
+        {
             throw new BusinessException(BusinessExceptionStatusEnum.HOUSE_EXIST, "房源已存在");
         }
         House house = houseConverter2.toPo(upsertHouseDTO);
@@ -134,18 +164,24 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
     @Override
     @Transactional
-    public Integer updateHouse(UpsertHouseDTO upsertHouseDTO) {
-        if (upsertHouseDTO.getRegionId() != null) {
+    public Integer updateHouse(UpsertHouseDTO upsertHouseDTO)
+    {
+        if (upsertHouseDTO.getRegionId() != null)
+        {
             Region region = regionMapper.selectById(upsertHouseDTO.getRegionId());
-            if (region != null) {
+            if (region != null)
+            {
                 upsertHouseDTO.setRegionName(region.getName());
-            } else {
+            }
+            else
+            {
                 throw new BusinessException(BusinessExceptionStatusEnum.ResourceNotFoundException, "地区不存在"); // 抛出业务异常，返回给前端
             }
         }
 //        更新house主表
         Integer affectedRows = houseMapper.updateHouseWithoutTag(upsertHouseDTO);
-        if (affectedRows == 0) {
+        if (affectedRows == 0)
+        {
             throw new RuntimeException("更新失败，房源不存在或数据未变化，ID: " + upsertHouseDTO.getHouseId());
         }
 //        更新标签 tag 关联表
@@ -158,7 +194,8 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         houseTagMapper.delete(wrapper);
 
         //再插入新的标签
-        if (tagIds != null && !tagIds.isEmpty()) {
+        if (tagIds != null && !tagIds.isEmpty())
+        {
             List<HouseTagDTO> list = tagIds.stream().map(tagId -> {
                 HouseTagDTO houseTag = new HouseTagDTO();
                 houseTag.setHouseId(houseId);
@@ -171,14 +208,16 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     }
 
     @Override
-    public Integer takedownHouse(Integer houseId) {
+    public Integer takedownHouse(Integer houseId)
+    {
         LambdaUpdateWrapper<House> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(House::getId, houseId).set(House::getStatus, HouseStatusEnum.DELISTED.getCode());
         return houseMapper.update(null, wrapper);
     }
 
     @Override
-    public List<Tag> getTags() {
+    public List<Tag> getTags()
+    {
         return tagMapper.selectList(null);
     }
 }
