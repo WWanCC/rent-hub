@@ -9,4 +9,6 @@ import java.util.List;
 public interface FavoriteService extends IService<UserFavorite> {
     void addFavorite(Integer houseId);
     List<HouseVO> listAllUserFavorites();
+
+    void deleteFavorite(Integer houseId);
 }

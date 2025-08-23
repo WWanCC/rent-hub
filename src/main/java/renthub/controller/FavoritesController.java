@@ -25,6 +25,15 @@ public class FavoritesController {
         return Result.success();
     }
 
+    @DeleteMapping("/{houseId}")
+    public Result<Object> deleteFavorite(@PathVariable Integer houseId) {
+        favoriteService.deleteFavorite(houseId);
+        // 如果Service没有抛出任何异常，就代表整个业务流程成功
+        return Result.success();
+    }
+
+
+
     @GetMapping
     public Result<List<HouseVO>> list() {
         return Result.success(favoriteService.listAllUserFavorites());
