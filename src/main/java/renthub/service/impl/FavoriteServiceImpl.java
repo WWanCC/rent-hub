@@ -28,8 +28,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorite> implements FavoriteService
-{
+public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorite> implements FavoriteService {
     private final HouseService houseService;
 
     /**
@@ -39,16 +38,14 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
      */
     @Override
     @Transactional
-    public void addFavorite(Integer houseId)
-    {
+    public void addFavorite(Integer houseId) {
         Integer userId = getCurrentUserId();
 
         // 检查被收藏房源 是否(存在) 待租状态
         LambdaQueryWrapper<House> houseExistWrapper = new LambdaQueryWrapper<>();
         houseExistWrapper.eq(House::getId, houseId).eq(House::getStatus, HouseStatusEnum.AVAILABLE);
 //        健壮性检查：如果被收藏的房源不存在，或者不是待租状态，则无法收藏
-        if (!houseService.exists(houseExistWrapper))
-        {
+        if (!houseService.exists(houseExistWrapper)) {
             throw new BusinessException(BusinessExceptionStatusEnum.ResourceNotFoundException, "被收藏的房源不存在或者不是待租状态");
         }
 
@@ -58,8 +55,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
                 .eq(UserFavorite::getUserId, userId)
                 .eq(UserFavorite::getHouseId, houseId);
 
-        if (this.exists(favoriteExistWrapper))
-        {
+        if (this.exists(favoriteExistWrapper)) {
             throw new BusinessException(BusinessExceptionStatusEnum.DuplicateResource, "已经收藏过此房源");
         }
 
@@ -68,15 +64,12 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
 
         //防御的不是业务逻辑错误，而是：并发冲突（如唯一键重复插入），数据完整性（由数据库的NOT NULL等约束强制保证），
         // 系统级的意外（如网络、数据库硬件等基础设施问题）等
-        try
-        {
-            if (!this.save(userFavorite))
-            {
+        try {
+            if (!this.save(userFavorite)) {
                 // save() 返回 false，这是一个非预期的持久化失败
                 throw new SystemException("保存收藏记录失败，数据库未返回受影响行数");
             }
-        } catch (DataAccessException e)
-        {
+        } catch (DataAccessException e) {
             // 【更重要】捕获由数据库约束（如唯一键）触发的底层异常
             // Spring 会将底层的JDBCException转换为DataAccessException的子类
             log.error("收藏记录插入数据库时发生数据访问异常", e); // 记录原始异常
@@ -85,8 +78,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
     }
 
     @Override
-    public List<HouseVO> listAllUserFavorites()
-    {
+    public List<HouseVO> listAllUserFavorites() {
         Integer userId = getCurrentUserId();
         List<HouseVO> allUserFavorite = this.baseMapper.findAllUserFavorite(userId);
         log.debug("获取当前用户收藏的房源：{}", allUserFavorite.toString());
@@ -94,8 +86,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
     }
 
     @Override
-    public void deleteFavorite(Integer houseId)
-    {
+    public void deleteFavorite(Integer houseId) {
         Integer userId = getCurrentUserId();
 
 //        确保用户只能删除自己的收藏，而不能通过猜测 houseId 删除别人的收藏
@@ -107,8 +98,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, UserFavorit
         this.remove(wrapper);
     }
 
-    private Integer getCurrentUserId()
-    {
+    private Integer getCurrentUserId() {
         return StpKit.USER.getLoginIdAsInt();
     }
 }

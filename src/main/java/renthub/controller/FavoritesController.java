@@ -9,7 +9,7 @@ import renthub.service.FavoriteService;
 import java.util.List;
 
 /**
- * 收藏夹
+ * 用户收藏夹
  */
 
 @RestController
