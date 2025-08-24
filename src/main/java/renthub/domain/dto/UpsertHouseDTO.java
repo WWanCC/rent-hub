@@ -8,6 +8,9 @@ import java.util.List;
 @Data
 public class UpsertHouseDTO {
     private Integer houseId;
+
+    private String imgUrl;
+
     List<Integer> tagIds;
     private String image;
 

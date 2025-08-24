@@ -1,4 +1,4 @@
-package renthub.util;
+package renthub.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.PutObjectRequest;
