@@ -16,6 +16,7 @@ import renthub.domain.dto.Result;
 import renthub.domain.po.Emp;
 import renthub.domain.po.Permission;
 import renthub.domain.po.Role;
+import renthub.domain.po.User;
 import renthub.domain.vo.EmpLoginVO;
 import renthub.domain.vo.RolePermissionsVO;
 import renthub.domain.vo.RolesPermissionsVO;
@@ -132,5 +133,18 @@ public class EmpController {
         return ResponseEntity.ok(Result.success(empRolesPermissions));
     }
 
+    //获取用户列表-带模糊
+    @GetMapping("/user-list")
+    public ResponseEntity<Result<List<User>>> getUserList(String keyword) {
+        List<User> userList = empService.getUserList(keyword);
+        return ResponseEntity.ok(Result.success(userList));
+    }
 
+    //获取员工列表-带模糊
+    @GetMapping("/emp-list")
+    public ResponseEntity<Result<List<Emp>>> getEmpList(@RequestParam(required = false) String keyword,
+                                                        @RequestParam(required = false) String role) {
+        List<Emp> empList = empService.getEmpList(keyword,role);
+        return ResponseEntity.ok(Result.success(empList));
+    }
 }

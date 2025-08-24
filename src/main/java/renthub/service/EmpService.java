@@ -5,6 +5,7 @@ import renthub.domain.dto.EmpLoginDTO;
 import renthub.domain.po.Emp;
 import com.baomidou.mybatisplus.extension.service.IService;
 import renthub.domain.po.Role;
+import renthub.domain.po.User;
 import renthub.domain.vo.RolePermissionsVO;
 import renthub.domain.vo.RolesPermissionsVO;
 
@@ -24,4 +25,9 @@ public interface EmpService extends IService<Emp> {
     void logout();
 
     RolesPermissionsVO getEmpRolesPermissions(Integer empId);
+
+    List<User> getUserList(String keyword);
+
+
+    List<Emp> getEmpList(String keyword, String role);
 }

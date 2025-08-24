@@ -2,16 +2,14 @@ package renthub.service.impl;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import renthub.auth.StpKit;
 import renthub.convert.RolePermissionConverter;
 import renthub.domain.dto.EmpLoginDTO;
-import renthub.domain.po.Emp;
-import renthub.domain.po.Permission;
-import renthub.domain.po.Role;
-import renthub.domain.po.RolePermission;
+import renthub.domain.po.*;
 import renthub.domain.vo.RolePermissionsVO;
 import renthub.domain.vo.RolesPermissionsVO;
 import renthub.enums.BusinessExceptionStatusEnum;
@@ -24,6 +22,7 @@ import renthub.service.EmpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import renthub.service.RolePermissionService;
+import renthub.service.UserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +43,7 @@ public class EmpServiceImpl extends ServiceImpl<EmpMapper, Emp> implements EmpSe
     private final EmpRoleService empRoleService;
     private final RolePermissionMapper rolePermissionMapper;
     private final RolePermissionConverter rolePermissionConverter;
+    private final UserService userService;
 
     @Override
     public SaTokenInfo login(EmpLoginDTO empLoginDTO) {
@@ -76,5 +76,37 @@ public class EmpServiceImpl extends ServiceImpl<EmpMapper, Emp> implements EmpSe
         List<Integer> roleIds = roles.stream().map(Role::getId).toList();
         List<Permission> permissions = rolePermissionMapper.getPermissions(roleIds);
         return rolePermissionConverter.toRolesPermissionsVO(roles, permissions);
+    }
+
+    @Override
+    public List<User> getUserList(String keyword) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(keyword)) {
+            wrapper.like(User::getPhone, keyword);
+        }
+        return userService.list(wrapper);
+    }
+
+    @Override
+    public List<Emp> getEmpList(String keyword, String role) {
+        LambdaQueryWrapper<Emp> wrapper = new LambdaQueryWrapper<>();
+
+        // 1. 处理【角色】的精确匹配
+        if (StrUtil.isNotBlank(role)) {
+            // 使用 eq (equals) 进行精确匹配，效率远高于 like
+            wrapper.eq(Emp::getRole, role);
+        }
+
+        // 如果 keyword 参数不为空，则添加 (username LIKE '%...%' OR real_name LIKE '%...%') 的条件
+        if (StrUtil.isNotBlank(keyword)) {
+            // 使用 and() 方法和 Lambda 表达式，将内部的 OR 条件作为一个整体
+            // 这会生成 SQL: ... AND (username LIKE ? OR real_name LIKE ?)
+            wrapper.and(wq -> wq.like(Emp::getUsername, keyword)
+                    .or()
+                    .like(Emp::getRealName, keyword));
+        }
+
+        wrapper.orderByDesc(Emp::getId);
+        return this.list(wrapper);
     }
 }
