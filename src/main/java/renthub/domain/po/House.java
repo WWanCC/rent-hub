@@ -64,7 +64,7 @@ public class House implements Serializable {
     private Integer layout;
 
     /**
-     * 0下架，1待租，2已签约
+     * 0下架，1待租，2签约中，3已签约
      */
     private Integer status;
 
