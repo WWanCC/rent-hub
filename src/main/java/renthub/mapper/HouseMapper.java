@@ -1,6 +1,7 @@
 package renthub.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import renthub.domain.dto.UpsertHouseDTO;
@@ -25,4 +26,10 @@ public interface HouseMapper extends BaseMapper<House> {
     List<TopHouseVO> findTopPriceHouseInEachRegion();
 
     Integer updateHouseWithoutTag(UpsertHouseDTO upsertHouseDTO);
+    /**
+     * 根据ID查询房源，并施加排他锁 (FOR UPDATE)
+     * @param houseId 房源ID
+     * @return 房源实体
+     */
+    House selectByIdForUpdate(@NotNull(message = "必须指定房源ID") Integer houseId);
 }

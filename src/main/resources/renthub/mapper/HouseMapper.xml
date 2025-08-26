@@ -63,10 +63,10 @@
         </where>
         <choose>
             <!-- 当客户端明确要求升序时 -->
-<!--            <when test="pQuery.sorted != null and 'asc'.equalsIgnoreCase(pQuery.sorted)">-->
-<!--                &lt;!&ndash;@ignoreSql&ndash;&gt;-->
-<!--                ORDER BY house.updated_at ,house.id ASC-->
-<!--            </when>-->
+            <!--            <when test="pQuery.sorted != null and 'asc'.equalsIgnoreCase(pQuery.sorted)">-->
+            <!--                &lt;!&ndash;@ignoreSql&ndash;&gt;-->
+            <!--                ORDER BY house.updated_at ,house.id ASC-->
+            <!--            </when>-->
             <!-- 当客户端明确要求按 价格 升序 -->
             <when test="pQuery.sorted != null and 'price_asc'.equalsIgnoreCase(pQuery.sorted)">
                 <!--@ignoreSql-->
@@ -144,4 +144,13 @@
         </set>
         where id=#{houseId}
     </update>
+
+    <select id="selectByIdForUpdate" resultType="renthub.domain.po.House">
+        SELECT *
+        FROM house
+        WHERE id = #{id}
+            FOR
+        UPDATE
+    </select>
+
 </mapper>
