@@ -29,10 +29,12 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             SaRouter.match("/houses/search").matchMethod("GET", "POST").stop();
 
             // ===================  C端用户专属接口认证 ===================
-            SaRouter.match("/user/**").check(userAuth);
+//            SaRouter.match("/user/**").check(userAuth);
+            SaRouter.match("/**/user/**").check(userAuth);
 
             // ===================  B端员工专属接口认证 ===================
-            SaRouter.match("/admin/**").check(empAuth);
+//            SaRouter.match("/admin/**").check(empAuth);
+            SaRouter.match("/**/admin/**").check(empAuth);
 
         })).addPathPatterns("/**");//拦截全部请求,进入sa-token路由拦截器，更细粒度鉴权
 
