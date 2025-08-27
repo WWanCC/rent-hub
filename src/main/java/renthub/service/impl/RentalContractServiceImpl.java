@@ -18,6 +18,7 @@ import renthub.mapper.RentalContractMapper;
 import renthub.service.IRentalContractService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import renthub.utils.SortUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -35,19 +36,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper, RentalContract> implements IRentalContractService {
 
-    // 1. 定义一个 Set 来存储所有合法的数据库列名 利用mp获取数据表列名元数据
-    private static final Set<String> VALID_SORT_COLUMNS;
+//    // 1. 定义一个 Set 来存储所有合法的数据库列名 利用mp获取数据表列名元数据
+//    private static final Set<String> VALID_SORT_COLUMNS;
+//
+//    // 2. 使用静态代码块，在类加载时就初始化这个白名单
+//    static {
+//        // 获取 RentalContract 实体对应的表信息
+//        TableInfo tableInfo = TableInfoHelper.getTableInfo(RentalContract.class);
+//
+//        // 从表信息中，获取所有字段的数据库列名，并存入 Set
+//        VALID_SORT_COLUMNS = tableInfo.getFieldList().stream()
+//                .map(TableFieldInfo::getColumn) // 获取数据库列名
+//                .collect(Collectors.toSet());
+//    }
 
-    // 2. 使用静态代码块，在类加载时就初始化这个白名单
-    static {
-        // 获取 RentalContract 实体对应的表信息
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(RentalContract.class);
-
-        // 从表信息中，获取所有字段的数据库列名，并存入 Set
-        VALID_SORT_COLUMNS = tableInfo.getFieldList().stream()
-                .map(TableFieldInfo::getColumn) // 获取数据库列名
-                .collect(Collectors.toSet());
-    }
+    private final SortUtil sortUtil;
 
     private final HouseMapper houseMapper;
 
@@ -101,16 +104,18 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
         QueryWrapper<RentalContract> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", currentUserId);
 //        将前端传入的驼峰命名 转换为 下划线 数据库字段名
-        String sortColumn = StringUtils.camelToUnderline(sortField);
-        if (VALID_SORT_COLUMNS.contains(sortColumn)) {
-            // 如果存在，则是安全的，可以用于排序
-            boolean isAsc = "asc".equalsIgnoreCase(sortOrder);
-            wrapper.orderBy(true, isAsc, sortColumn);
-        }
-        else {
-            // 如果不存在，则使用默认排序，保证程序的健壮性
-            wrapper.orderByDesc("created_at");
-        }
+        sortUtil.applySort(wrapper, RentalContract.class, sortField, sortOrder);
+
+//        String sortColumn = StringUtils.camelToUnderline(sortField);
+//        if (VALID_SORT_COLUMNS.contains(sortColumn)) {
+//            // 如果存在，则是安全的，可以用于排序
+//            boolean isAsc = "asc".equalsIgnoreCase(sortOrder);
+//            wrapper.orderBy(true, isAsc, sortColumn);
+//        }
+//        else {
+//            // 如果不存在，则使用默认排序，保证程序的健壮性
+//            wrapper.orderByDesc("created_at");
+//        }
 
         return this.list(wrapper);
     }
