@@ -3,8 +3,8 @@ package renthub.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
+@RequiredArgsConstructor
 public enum BusinessExceptionStatusEnum {
     UnknownException(0, "业务异常"),
     DuplicateResource(1, "数据重复异常"),
@@ -16,7 +16,12 @@ public enum BusinessExceptionStatusEnum {
 
     ROLE_NOT_EXIST(40003, "角色不存在"),
     PERMISSION_NOT_EXIST(40004, "权限不存在"),
-    EMP_NOT_EXIST(40005, "员工不存在");
+    EMP_NOT_EXIST(40005, "员工不存在"),
+
+    //    合同
+    HOUSE_NOT_FOUND(40006, "房源不存在"),
+    HOUSE_NOT_AVAILABLE(40007, "该房源已被预定或签约，无法创建合同"),
+    CONTRACT_INVALID_STATUS(40008, "合同状态不正确，无法进行操作");
 
     private final int code;
     private final String description;
