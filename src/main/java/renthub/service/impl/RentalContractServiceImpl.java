@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import renthub.domain.dto.AdminCreateContractDTO;
 import renthub.domain.po.House;
 import renthub.domain.po.RentalContract;
+import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.ContractStatusEnum;
 import renthub.enums.HouseStatusEnum;
+import renthub.exception.BusinessException;
 import renthub.mapper.HouseMapper;
 import renthub.mapper.RentalContractMapper;
 import renthub.service.IRentalContractService;
@@ -20,6 +22,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import renthub.utils.SortUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,10 +65,10 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
 
         // 2. [业务校验]
         if (house == null) {
-            throw new RuntimeException("房源不存在");
+            throw new BusinessException(BusinessExceptionStatusEnum.HOUSE_NOT_FOUND);
         }
         if (house.getStatus() != HouseStatusEnum.AVAILABLE.getCode()) {
-            throw new RuntimeException("该房源已被预定或签约，无法创建合同");
+            throw new BusinessException(BusinessExceptionStatusEnum.HOUSE_NOT_AVAILABLE);
         }
 
         // 3. [业务操作] 施加业务锁：更新房源状态为“待用户确认”  LOCKED状态
@@ -81,7 +84,8 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
                 .setFinalPrice(dto.getFinalPrice())
                 .setStartDate(dto.getStartDate())
                 .setEndDate(dto.getEndDate())
-                .setStatus(ContractStatusEnum.PENDING_CONFIRMATION.getCode()); //待用户确认
+                .setStatus(ContractStatusEnum.PENDING_CONFIRMATION.getCode())//待用户确认
+                .setCreatedAt(LocalDateTime.now());
 
         // 5. [调用Mapper] 插入合同数据
         this.save(contract);
@@ -140,12 +144,12 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
         //  权限校验：确认合同存在，并且确实是属于当前登录用户的
         if (contract == null || !contract.getUserId().equals(currentUserId)) {
             // 抛出异常，全局异常处理器会捕获并返回给前端错误信息
-            throw new RuntimeException("合同不存在或您无权操作该合同");
+            throw new BusinessException(BusinessExceptionStatusEnum.ResourceNotFoundException);
         }
 
         //状态校验：确认合同当前是“待用户确认”的状态
         if (contract.getStatus() != ContractStatusEnum.PENDING_CONFIRMATION.getCode()) {
-            throw new RuntimeException("合同当前状态不正确，无法进行确认操作");
+            throw new BusinessException(BusinessExceptionStatusEnum.CONTRACT_INVALID_STATUS);
         }
 
         // 3. [数据查询] 查询关联的房源信息，并校验其“业务锁”状态
@@ -154,12 +158,12 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
         // a. 关联数据校验：确保房源数据是存在的
         if (house == null) {
             // 这种情况通常是数据异常，需要记录日志排查
-            throw new RuntimeException("关联的房源信息不存在，请联系管理员");
+            throw new BusinessException(BusinessExceptionStatusEnum.HOUSE_NOT_FOUND);
         }
 
         // b. 业务锁校验：确保房源当前是被该合同“锁定”的状态
         if (house.getStatus() != HouseStatusEnum.LOCKED.getCode()) {
-            throw new RuntimeException("房源状态异常，签约失败（可能已被管理员取消或超时）");
+            throw new BusinessException(BusinessExceptionStatusEnum.HOUSE_NOT_AVAILABLE);
         }
 
         // --- 所有校验全部通过，可以安全地执行数据库更新 ---
