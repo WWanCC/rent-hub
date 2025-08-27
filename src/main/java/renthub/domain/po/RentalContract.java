@@ -66,7 +66,7 @@ public class RentalContract implements Serializable {
     private LocalDate endDate;
 
     /**
-     * 合同状态 (1:进行中, 2:签约完成)
+     * 合同状态
      */
     private Integer status;
 
