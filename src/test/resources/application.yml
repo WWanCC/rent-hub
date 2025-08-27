@@ -1,6 +1,10 @@
 # Spring Boot 主配置
 spring:
   # --- DataSource Configuration for TEST environment ---
+  graphql:
+    cors:
+      allowed-origins: http://localhost:5173
+
   datasource:
     # 使用H2内存数据库
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL
@@ -20,3 +24,14 @@ spring:
 logging:
   level:
     renthub.mapper: DEBUG # 在测试中打印SQL，方便调试
+
+aliyun:
+  oss:
+    endpoint: dummy-endpoint.com  # 提供一个假的、非空的 endpoint
+    bucketName: dummy-bucket      # 提供一个假的、非空的 bucketName
+
+sa-token:
+  # 提供一个假的 JWT 密钥，让 StpUtil.login() 能正常工作
+  jwt-secret-key: "this-is-a-super-secret-key-for-testing-purpose-only-123456"
+  # 在测试时关闭日志，保持控制台干净
+  is-log: false
