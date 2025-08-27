@@ -142,7 +142,7 @@
             <version>3.17.4</version>
         </dependency>
 
-<!--阿里提示java9+需要安装以下额外依赖-->
+        <!--阿里提示java9+需要安装以下额外依赖-->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -161,7 +161,6 @@
         </dependency>
 
 
-
         <!-- 用于计算文件的MD5哈希值 -->
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
@@ -170,18 +169,25 @@
             <version>1.19.0</version>
         </dependency>
 
-<!--配置 IDE 提示-->
+        <!--配置 IDE 提示-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
 
-<!--        一个非常著名且常用的第三方 Java 工具库-->
+        <!--        一个非常著名且常用的第三方 Java 工具库-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>  <!-- 这是一个稳定且常用的版本 -->
+        </dependency>
+
+        <!--h2嵌入式 数据库-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope> <!-- 这个依赖只在测试时有效，不会被打包到生产环境的 jar/war 中 -->
         </dependency>
 
 

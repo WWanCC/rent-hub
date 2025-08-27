@@ -89,6 +89,20 @@ sa-token:
   jwt-secret-key: Bai5
 
 
+#阿里云OSS
+aliyun:
+  oss:
+    #    配置公开信息
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucketName: rent-hub
+
+
+
+
+
+
+
+
 
 
 #  # C端用户 LoginType 配置
@@ -105,11 +119,5 @@ sa-token:
 
 
 
-#阿里云OSS
-aliyun:
-  oss:
-#    配置公开信息
-    endpoint: oss-cn-beijing.aliyuncs.com
-    bucketName: rent-hub
 
 

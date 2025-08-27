@@ -1,0 +1,22 @@
+# Spring Boot 主配置
+spring:
+  # --- DataSource Configuration for TEST environment ---
+  datasource:
+    # 使用H2内存数据库
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  # --- JPA/Hibernate Configuration (用于自动建表) ---
+  jpa:
+    hibernate:
+      # 在测试开始时自动建表，测试结束后自动删表
+      ddl-auto: create-drop
+    # 告诉 Hibernate 使用 H2 模拟 MySQL
+    database-platform: org.hibernate.dialect.H2Dialect
+
+# (可选) 在测试时，可以覆盖主配置中的日志级别
+logging:
+  level:
+    renthub.mapper: DEBUG # 在测试中打印SQL，方便调试
