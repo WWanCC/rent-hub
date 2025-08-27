@@ -1,0 +1,7 @@
+ //exec后面是容器ID
+
+1.在容器内部的 /tmp 临时文件夹下创建一个名为 backup.sql 的文件
+docker exec 909e1df31c3fadd08baa3989c0549d004259397f3d2c2e84e55cd781cef69821 sh -c "mysqldump --default-character-set=utf8mb4 -u root -p'abcd1234' rent_hub > /tmp/backup.sql"
+
+2.将文件从容器复制到桌面 规避终端编码导致中文乱码问题
+docker cp 909e1df31c3fadd08baa3989c0549d004259397f3d2c2e84e55cd781cef69821:/tmp/backup.sql "C:\Users\Administrator\Desktop\rent_hub_backup_$(Get-Date -Format 'yyyy-MM-dd').sql"
