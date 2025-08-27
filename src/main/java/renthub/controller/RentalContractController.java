@@ -1,6 +1,7 @@
 package renthub.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import renthub.auth.StpKit;
 import renthub.domain.dto.AdminCreateContractDTO;
 import renthub.domain.dto.Result;
 import renthub.domain.po.RentalContract;
+import renthub.enums.LoginTypeEnum;
 import renthub.service.IRentalContractService;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class RentalContractController {
      * B端接口：中介为指定用户创建一份“待确认”的合同
      */
     @PostMapping("/admin")
+    @SaCheckLogin(type = LoginTypeEnum.EmpType)
     public ResponseEntity<Result<String>> createContract(@RequestBody @Valid AdminCreateContractDTO dto) {
         int empId = StpKit.EMP.getLoginIdAsInt();
         String contractNo = contractService.createContractForUser(dto, empId);
@@ -42,6 +45,7 @@ public class RentalContractController {
      * @return 包含合同简要信息的列表
      */
     @GetMapping("/user")
+    @SaCheckLogin(type = LoginTypeEnum.UserType)
     public ResponseEntity<Result<List<RentalContract>>> getMyContracts(@RequestParam String sortField, @RequestParam String sortOrder) {
         int currentUserId = StpKit.USER.getLoginIdAsInt();
         List<RentalContract> contractList = contractService.getUserContracts(currentUserId, sortField, sortOrder);
@@ -56,6 +60,7 @@ public class RentalContractController {
      * @return 操作成功的响应
      */
     @PostMapping("/user/{contractId}/confirm")
+    @SaCheckLogin(type = LoginTypeEnum.UserType)
     public ResponseEntity<Result<Void>> confirmContract(@PathVariable Integer contractId) {
         int currentUserId = StpKit.USER.getLoginIdAsInt();
 
