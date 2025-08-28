@@ -41,7 +41,7 @@ public class SortUtil {
         }
     }
 
-    private Set<String> getValidSortColumns(Class<?> entityClass) {
+    public Set<String> getValidSortColumns(Class<?> entityClass) {
         return validColumnsCache.computeIfAbsent(entityClass, this::parseAndCacheColumns);
     }
 
