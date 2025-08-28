@@ -1,0 +1,87 @@
+# 1. 声明我们将使用一个自定义的 JSON 标量类型
+scalar JSON
+scalar Long #Graphql默认没有Long类型
+# ==================================
+# ===      查询入口 (Query)      ===
+# ==================================
+type Query {
+    """
+    通用实体查询接口。
+    - entity: [必需] 要查询的实体别名 (来自下面的 EntityAlias 枚举)
+    - page/size: 分页参数
+    - filter: [可选] 任意结构的 JSON 对象，用于过滤
+    - sort: [可选] 排序条件列表
+    """
+    queryEntities(
+        entity: EntityAlias!
+        page: Int = 1
+        size: Int = 10
+        filter: JSON
+        sort: [SortInput!]
+    ): EntityPage!
+}
+
+# ==================================
+# ===      通用返回类型         ===
+# ==================================
+# 定义一个所有可查询实体都必须实现的接口，至少包含 id
+interface Entity {
+    id: ID!
+}
+
+# 定义一个联合类型，它的值可以是任意一个我们允许查询的实体类型
+union EntityResult = House | RentalContract | User
+
+# 通用的分页结果类型
+type EntityPage {
+    content: [EntityResult]!
+    totalPages: Int!
+    totalElements: Long!
+    number: Int!
+    size: Int!
+}
+
+# ==================================
+# ===      具体实体类型定义       ===
+# ==================================
+# 每一个实体类型都必须实现 Entity 接口
+type House implements Entity {
+    id: ID!
+    title: String
+    pricePerMonth: Float
+    status: Int
+    # ... 您想暴露给前端的其他字段
+}
+
+type RentalContract implements Entity {
+    id: ID!
+    contractNo: String
+    status: Int
+    finalPrice: Float
+    # 还可以定义关联查询
+    # house: House
+}
+
+type User implements Entity {
+    id: ID!
+    username: String
+    nickname: String
+}
+
+# ==================================
+# ===  输入与枚举 (Input & Enum) ===
+# ==================================
+# 【安全核心】用枚举来严格约束前端可以查询的“表”
+enum EntityAlias {
+    HOUSES
+    CONTRACTS
+    USERS
+}
+
+# 通用排序输入类型
+input SortInput {
+    field: String!
+    direction: SortDirection = DESC
+}
+
+enum SortDirection { ASC DESC }
