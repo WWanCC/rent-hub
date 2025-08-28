@@ -195,6 +195,20 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- Spring for GraphQL Starter: 官方提供的 GraphQL 集成 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
+        </dependency>
+
+<!--         (可选) GraphQL Java Extended Scalars: 提供了 JSON 等自定义标量类型的支持 -->
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>21.0</version>
+        </dependency>
+
+
 
     </dependencies>
 
