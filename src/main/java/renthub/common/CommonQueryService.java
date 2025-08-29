@@ -11,10 +11,7 @@ import renthub.GraphQL.EntityAlias;
 import renthub.GraphQL.PaginationInput;
 import renthub.GraphQL.SortInput;
 import renthub.auth.strategy.QueryAuthStrategy;
-import renthub.domain.po.House;
-import renthub.domain.po.Region;
-import renthub.domain.po.RentalContract;
-import renthub.domain.po.User;
+import renthub.domain.po.*;
 import renthub.utils.SortUtil;
 
 import java.util.List;
@@ -45,7 +42,8 @@ public class CommonQueryService {
             EntityAlias.HOUSES, House.class,
             EntityAlias.CONTRACTS, RentalContract.class,
             EntityAlias.USERS, User.class,
-            EntityAlias.REGIONS, Region.class
+            EntityAlias.REGIONS, Region.class,
+            EntityAlias.EMP, Emp.class
             // 未来想开放新表的查询，只需在此处注册即可
     );
 
@@ -92,7 +90,8 @@ public class CommonQueryService {
         QueryAuthStrategy<T> strategy = (QueryAuthStrategy<T>) authStrategyMap.get(entityClass);
         if (strategy != null) {
             strategy.applyAuth(wrapper);
-        } else {
+        }
+        else {
             throw new SecurityException("安全策略缺失：没有为 " + entityClass.getSimpleName() + " 配置查询权限");
         }
 
@@ -103,7 +102,8 @@ public class CommonQueryService {
         if (sort != null && !sort.isEmpty()) {
             SortInput firstSort = sort.get(0);
             sortUtil.applySort(wrapper, entityClass, firstSort.getField(), firstSort.getDirection().name());
-        } else {
+        }
+        else {
             sortUtil.applySort(wrapper, entityClass, null, null);
         }
 
@@ -112,7 +112,8 @@ public class CommonQueryService {
             // **模式一：执行正常的分页查询**
             IPage<T> pageRequest = new Page<>(pagination.getPage(), pagination.getSize());
             return mapper.selectPage(pageRequest, wrapper);
-        } else {
+        }
+        else {
             // **模式二：执行不分页的全量查询**
             List<T> allRecords = mapper.selectList(wrapper);
 
@@ -154,10 +155,18 @@ public class CommonQueryService {
             String column = StringUtils.camelToUnderline(fieldName);
             if (validColumns.contains(column)) {
                 switch (operator) {
-                    case "gte": wrapper.ge(column, value); break;
-                    case "lte": wrapper.le(column, value); break;
-                    case "like": wrapper.like(column, value); break;
-                    default: wrapper.eq(column, value); break;
+                    case "gte":
+                        wrapper.ge(column, value);
+                        break;
+                    case "lte":
+                        wrapper.le(column, value);
+                        break;
+                    case "like":
+                        wrapper.like(column, value);
+                        break;
+                    default:
+                        wrapper.eq(column, value);
+                        break;
                 }
             }
         });

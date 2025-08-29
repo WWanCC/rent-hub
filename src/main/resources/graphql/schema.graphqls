@@ -36,7 +36,7 @@ interface Entity {
 }
 
 # 定义一个联合类型，它的值可以是任意一个我们允许查询的实体类型
-union EntityResult = House | RentalContract | User | Region
+union EntityResult = House | RentalContract | User | Region | Emp
 
 # 通用的分页结果类型
 type EntityPage {
@@ -80,6 +80,15 @@ type Region implements Entity{
     parentId: ID
 }
 
+type Emp implements Entity {
+    id: ID!
+    username: String
+    password:String
+    realName: String
+    phoneNumber: String
+    role: String
+}
+
 # ==================================
 # ===  输入与枚举 (Input & Enum) ===
 # ==================================
@@ -88,7 +97,8 @@ enum EntityAlias {
     HOUSES
     CONTRACTS
     USERS,
-    REGIONS
+    REGIONS,
+    EMP
 }
 
 # 通用排序输入类型
