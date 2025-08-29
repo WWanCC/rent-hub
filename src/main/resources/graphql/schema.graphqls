@@ -14,11 +14,17 @@ type Query {
     """
     queryEntities(
         entity: EntityAlias!
-        page: Int = 1
-        size: Int = 10
+        # 【核心改动】将分页参数包装成一个【可选的】对象
+        # 如果前端不传递这个 pagination 对象，它在后端接收到的就是 null
+        pagination: PaginationInput
         filter: JSON
         sort: [SortInput!]
-    ): EntityPage!
+    ): EntityPage! # 返回值保持不变
+}
+
+input PaginationInput {
+    page: Int!
+    size: Int!
 }
 
 # ==================================
@@ -26,11 +32,11 @@ type Query {
 # ==================================
 # 定义一个所有可查询实体都必须实现的接口，至少包含 id
 interface Entity {
-    id: ID!
+    id: ID
 }
 
 # 定义一个联合类型，它的值可以是任意一个我们允许查询的实体类型
-union EntityResult = House | RentalContract | User
+union EntityResult = House | RentalContract | User | Region
 
 # 通用的分页结果类型
 type EntityPage {
@@ -68,6 +74,12 @@ type User implements Entity {
     nickname: String
 }
 
+type Region implements Entity{
+    id: ID
+    name:String,
+    parentId: ID
+}
+
 # ==================================
 # ===  输入与枚举 (Input & Enum) ===
 # ==================================
@@ -75,7 +87,8 @@ type User implements Entity {
 enum EntityAlias {
     HOUSES
     CONTRACTS
-    USERS
+    USERS,
+    REGIONS
 }
 
 # 通用排序输入类型
