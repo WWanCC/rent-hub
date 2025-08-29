@@ -43,7 +43,8 @@ public class CommonQueryService {
             EntityAlias.CONTRACTS, RentalContract.class,
             EntityAlias.USERS, User.class,
             EntityAlias.REGIONS, Region.class,
-            EntityAlias.EMP, Emp.class
+            EntityAlias.EMP, Emp.class,
+            EntityAlias.TAG, Tag.class
             // 未来想开放新表的查询，只需在此处注册即可
     );
 

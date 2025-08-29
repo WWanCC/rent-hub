@@ -45,6 +45,9 @@ public class GraphQLConfig {
             if (javaObject instanceof Emp) {
                 return env.getSchema().getObjectType("Emp");
             }
+            if (javaObject instanceof Tag) {
+                return env.getSchema().getObjectType("Tag");
+            }
 
             // 如果都不是，返回 null，GraphQL 会抛出错误
             return null;
