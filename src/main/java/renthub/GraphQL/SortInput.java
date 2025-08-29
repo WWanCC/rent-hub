@@ -1,7 +1,6 @@
 package renthub.GraphQL;
 
 import lombok.Data;
-import org.hibernate.query.SortDirection;
 
 @Data
 public class SortInput {
