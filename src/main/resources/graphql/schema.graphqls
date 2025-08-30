@@ -36,7 +36,7 @@ interface Entity {
 }
 
 # 定义一个联合类型，它的值可以是任意一个我们允许查询的实体类型
-union EntityResult = House | RentalContract | User | Region | Emp | Tag
+union EntityResult = House | RentalContract | User | Region | Emp | Tag | Notification
 
 # 通用的分页结果类型
 type EntityPage {
@@ -94,6 +94,32 @@ type Tag implements Entity {
     name: String
 }
 
+type Notification implements Entity {
+    id: ID!
+    title: String
+    content: String
+    isRead: Boolean # 注意：Java中的 isRead (boolean) 对应 GraphQL 的 Boolean
+    createdAt: String
+}
+
+type Mutation {
+
+    """
+    将单条通知标记为已读。
+    - id: [必需] 要标记的通知的ID。
+    - 返回值: 更新成功后的 Notification 对象。
+    """
+    markNotificationAsRead(id: ID!): Notification
+
+    """
+    将当前登录者的所有未读通知一键标记为已读。
+    - 返回值: 成功标记为已读的通知数量。
+    """
+    markAllNotificationsAsRead: Int
+
+    # ... 未来可以增加其他 Mutation，比如 createHouse, deleteUser 等 ...
+}
+
 # ==================================
 # ===  输入与枚举 (Input & Enum) ===
 # ==================================
@@ -104,7 +130,8 @@ enum EntityAlias {
     USERS,
     REGIONS,
     EMP,
-    TAG
+    TAG,
+    NOTIFICATIONS
 }
 
 # 通用排序输入类型

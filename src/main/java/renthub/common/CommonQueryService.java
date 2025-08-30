@@ -44,7 +44,8 @@ public class CommonQueryService {
             EntityAlias.USERS, User.class,
             EntityAlias.REGIONS, Region.class,
             EntityAlias.EMP, Emp.class,
-            EntityAlias.TAG, Tag.class
+            EntityAlias.TAG, Tag.class,
+            EntityAlias.NOTIFICATIONS, Notification.class
             // 未来想开放新表的查询，只需在此处注册即可
     );
 

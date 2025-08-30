@@ -16,7 +16,8 @@ public enum EntityAlias {
     USERS,
     REGIONS,
     EMP,
-    TAG
+    TAG,
+    NOTIFICATIONS
 
     // 未来如果想开放对新表的查询，比如 "Regions"，
     // 只需要在这里增加一个 REGIONS 成员即可。
