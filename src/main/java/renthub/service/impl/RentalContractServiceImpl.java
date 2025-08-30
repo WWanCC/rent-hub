@@ -30,7 +30,9 @@ import renthub.utils.SortUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -212,12 +214,36 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
             return;
         }
 
+
+        //批量预加载所有关联数据】
+        // ====================================================================
+
+        // a. 从合同列表中，提取出所有不重复的 userId
+        Set<Integer> userIds = expiringContracts.stream()
+                .map(RentalContract::getUserId)
+                .collect(Collectors.toSet());
+
+        // b. 使用一次 IN 查询，获取所有相关的用户信息，并存入 Map 以便快速查找
+        Map<Integer, User> userMap = userMapper.selectBatchIds(userIds).stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        // c. 使用一次 IN 查询，获取所有相关的用户详情信息，并存入 Map
+        Map<Integer, UserDetail> userDetailMap = userDetailMapper.selectBatchIds(userIds).stream()
+                .collect(Collectors.toMap(UserDetail::getUserId, Function.identity()));
+
+        // ====================================================================
+
         log.info("发现 {} 份即将到期的合同，准备发送通知...", expiringContracts.size());
+
 
         for (RentalContract contract : expiringContracts) {
             // 3. 为租客创建通知
-            User tenantUser = userMapper.selectById(contract.getUserId());
-            UserDetail tenantUserDetail = userDetailMapper.selectById(contract.getUserId());
+//            User tenantUser = userMapper.selectById(contract.getUserId());
+//            UserDetail tenantUserDetail = userDetailMapper.selectById(contract.getUserId());
+
+            User tenantUser = userMap.get(contract.getUserId());
+            UserDetail tenantUserDetail = userDetailMap.get(contract.getUserId());
+
             String tenantIdentifier = "用户(ID:" + contract.getUserId() + ")"; // 默认的、兜底的显示方式
 
             if (tenantUser != null) {
