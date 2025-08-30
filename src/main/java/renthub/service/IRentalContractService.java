@@ -31,4 +31,16 @@ public interface IRentalContractService extends IService<RentalContract> {
      * @param currentUserId 执行操作的用户ID（用于权限校验）
      */
     void confirmContract(Integer contractId, int currentUserId);
+
+    /**
+     * 处理即将到期的合同（发送通知）
+     */
+    void processExpiringContracts();
+
+
+    /**
+     * 合同状态自动更新任务
+     * 每天凌晨 1:00 执行，将已到期的合同状态置为“已结束”。
+     */
+    void processFinishedContracts();
 }

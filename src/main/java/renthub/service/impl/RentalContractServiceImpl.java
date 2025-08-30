@@ -2,26 +2,32 @@ package renthub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import renthub.domain.dto.AdminCreateContractDTO;
-import renthub.domain.po.House;
-import renthub.domain.po.RentalContract;
+import renthub.domain.po.*;
 import renthub.enums.BusinessExceptionStatusEnum;
 import renthub.enums.ContractStatusEnum;
 import renthub.enums.HouseStatusEnum;
+import renthub.enums.NotifiedStatusEnum;
 import renthub.exception.BusinessException;
 import renthub.mapper.HouseMapper;
 import renthub.mapper.RentalContractMapper;
+import renthub.mapper.Template.UserDetailMapper;
+import renthub.mapper.UserMapper;
+import renthub.service.INotificationService;
 import renthub.service.IRentalContractService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import renthub.utils.SortUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +41,8 @@ import java.util.stream.Collectors;
  * @author Bai5
  * @since 2025-08-26
  */
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper, RentalContract> implements IRentalContractService {
@@ -56,6 +64,12 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
     private final SortUtil sortUtil;
 
     private final HouseMapper houseMapper;
+
+    private final INotificationService notificationService;
+
+    private final UserMapper userMapper;
+
+    private final UserDetailMapper userDetailMapper;
 
     @Override
     @Transactional // 开启事务，保证数据一致性
@@ -85,7 +99,8 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
                 .setStartDate(dto.getStartDate())
                 .setEndDate(dto.getEndDate())
                 .setStatus(ContractStatusEnum.PENDING_CONFIRMATION.getCode())//待用户确认
-                .setCreatedAt(LocalDateTime.now());
+                .setCreatedAt(LocalDateTime.now())
+                .setExpiryNotified(NotifiedStatusEnum.UNNOTIFIED);
 
         // 5. [调用Mapper] 插入合同数据
         this.save(contract);
@@ -176,4 +191,117 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
         house.setStatus(HouseStatusEnum.RENTED.getCode());
         houseMapper.updateById(house);
     }
+
+    @Override
+    @Transactional
+    public void processExpiringContracts() {
+        // 1. 定义“即将到期”的业务规则，例如：未来7天内
+        LocalDate sevenDaysFromNow = LocalDate.now().plusDays(7);
+
+        // 2. 查询出所有【进行中】且【7天内到期】且【尚未发送过提醒】的合同
+        //    (contract 表有一个 is_expiry_notified 字段来防止重复发送)
+        LambdaQueryWrapper<RentalContract> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RentalContract::getStatus, ContractStatusEnum.IN_PROGRESS.getCode())
+                .le(RentalContract::getEndDate, sevenDaysFromNow)
+                .eq(RentalContract::getExpiryNotified, NotifiedStatusEnum.UNNOTIFIED);
+
+        List<RentalContract> expiringContracts = this.list(wrapper);
+
+        if (expiringContracts.isEmpty()) {
+            log.info("没有找到即将到期的合同需要处理。");
+            return;
+        }
+
+        log.info("发现 {} 份即将到期的合同，准备发送通知...", expiringContracts.size());
+
+        for (RentalContract contract : expiringContracts) {
+            // 3. 为租客创建通知
+            User tenantUser = userMapper.selectById(contract.getUserId());
+            UserDetail tenantUserDetail = userDetailMapper.selectById(contract.getUserId());
+            String tenantIdentifier = "用户(ID:" + contract.getUserId() + ")"; // 默认的、兜底的显示方式
+
+            if (tenantUser != null) {
+                // 如果能查到用户信息，优先使用更友好的标识
+                StringBuilder sb = new StringBuilder();
+                if (tenantUserDetail != null && StringUtils.isNotBlank(tenantUserDetail.getRealName())) {
+                    sb.append(tenantUserDetail.getRealName()).append(" ");
+                }
+                if (StringUtils.isNotBlank(tenantUser.getPhone())) {
+                    sb.append(tenantUser.getPhone());
+                }
+                tenantIdentifier = sb.toString();
+            }
+
+//            给用户的通知
+            Notification userNotice = new Notification()
+                    .setUserId(contract.getUserId())
+                    .setTitle("您的房屋合同即将到期")
+                    .setContent("您好，您的合同将于 " + contract.getEndDate() + " 到期，请留意。");
+            notificationService.save(userNotice);
+
+            // 4. 为中介创建通知
+            Notification empNotice = new Notification()
+                    .setEmpId(contract.getEmpId())
+                    .setTitle("客户合同即将到期提醒")
+                    .setContent("客户（ " + tenantIdentifier + "）的合同将于 " + contract.getEndDate() + " 到期，请及时跟进。");
+            notificationService.save(empNotice);
+
+            // 5. 【关键】更新合同的状态，防止重复发送
+            contract.setExpiryNotified(NotifiedStatusEnum.NOTIFIED);
+            this.updateById(contract);
+        }
+    }
+
+    /**
+     * 【定时任务】处理已完结的合同。
+     * 将到期合同的状态更新为“已结束”，并将其关联的房源状态恢复为“待出租”。
+     */
+    @Override
+    @Transactional
+    public void processFinishedContracts() {
+        // 1. 获取今天的日期，作为判断合同是否到期的基准
+        LocalDate today = LocalDate.now();
+
+        // 2. 查询出所有【进行中】且【结束日期 <= 今天】的合同
+        LambdaQueryWrapper<RentalContract> wrapper = new LambdaQueryWrapper<>();
+        wrapper
+                .eq(RentalContract::getStatus, ContractStatusEnum.IN_PROGRESS)
+                .le(RentalContract::getEndDate, today);
+
+        List<RentalContract> finishedContracts = this.list(wrapper);
+
+        if (finishedContracts.isEmpty()) {
+            log.info("没有找到已到期的合同需要处理。");
+            return;
+        }
+
+        log.info("发现 {} 份已到期的合同，准备更新状态...", finishedContracts.size());
+
+        // 3. 准备批量更新合同状态
+        for (RentalContract contract : finishedContracts) {
+            contract.setStatus(ContractStatusEnum.FINISHED.getCode());
+        }
+        // 使用 MyBatis-Plus 提供的批量更新方法，效率更高
+        this.updateBatchById(finishedContracts);
+
+        // 4. 准备批量更新关联的房源状态
+        // a. 提取出所有需要更新状态的房源 ID
+        List<Integer> houseIdsToUpdate = finishedContracts.stream()
+                .map(RentalContract::getHouseId)
+                .collect(Collectors.toList());
+
+        // b. 创建一个新的 House 实体作为更新模板，只设置要更新的 status 字段
+        House houseUpdateTemplate = new House();
+        houseUpdateTemplate.setStatus(HouseStatusEnum.AVAILABLE.getCode());
+
+        // c. 创建一个 UpdateWrapper，指定更新条件 (id IN (...))
+        LambdaUpdateWrapper<House> houseUpdateWrapper = new LambdaUpdateWrapper<>();
+        houseUpdateWrapper.in(House::getId, houseIdsToUpdate);
+
+        // d. 执行批量更新
+        houseMapper.update(houseUpdateTemplate, houseUpdateWrapper);
+
+        log.info("成功处理了 {} 份到期合同，并将关联的房源状态重置为“待出租”。", finishedContracts.size());
+    }
 }
+

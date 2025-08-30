@@ -70,6 +70,4 @@ public class Notification implements Serializable {
 
     @TableField("emp_is_read")
     private Integer empIsRead;
-
-
 }
