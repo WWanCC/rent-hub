@@ -13,5 +13,5 @@ public enum SortDirection {
     /**
      * 降序
      */
-    DESC;
+    DESC
 }

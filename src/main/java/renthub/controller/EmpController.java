@@ -45,7 +45,7 @@ public class EmpController {
     private final EmpRoleService empRoleService;
 
     @PostMapping("creat-account")
-//    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
+    @SaCheckRole(type = LoginTypeEnum.EmpType, value = "BranchManager")
     public ResponseEntity<Result<Void>> createAccount(@RequestBody Emp emp) {
         emp.setPassword(passwordEncoder.encode(emp.getPassword()));
         empService.save(emp);

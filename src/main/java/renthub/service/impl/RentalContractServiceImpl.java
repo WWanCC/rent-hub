@@ -3,9 +3,6 @@ package renthub.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,7 +114,6 @@ public class RentalContractServiceImpl extends ServiceImpl<RentalContractMapper,
      * @param currentUserId 操作的用户id
      * @param sortField     前端想要的排序字段
      * @param sortOrder     前端想要的排序顺序
-     * @return
      */
     @Override
     public List<RentalContract> getUserContracts(int currentUserId, String sortField, String sortOrder) {
