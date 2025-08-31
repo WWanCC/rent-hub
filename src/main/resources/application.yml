@@ -38,9 +38,15 @@ spring:
           # 连接池中的最小空闲连接
           min-idle: 0
   graphql:
-    cors:
-      allowed-origins: http://localhost:5173
-
+    # 配置HTTP端点的路径
+    http:
+      path: /graphql
+    # 配置GraphiQL工具的访问路径
+    graphiql:
+      enabled: true
+      path: /graphiql
+#    cors:
+#      allowed-origins: http://localhost:5173
 
 #mybatis配置
 mybatis-plus:
@@ -49,8 +55,8 @@ mybatis-plus:
     db-config:
       id-type: auto
   configuration:
-#   保持注释 将其日志输出委托给SLF4J处理
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #   保持注释 将其日志输出委托给SLF4J处理
+    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #枚举处理器
 
@@ -81,7 +87,7 @@ sa-token:
   # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
   is-share: false
   # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
-#  token-style: uuid
+  #  token-style: uuid
 
   # 是否输出操作日志
   is-log: true
