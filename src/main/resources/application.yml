@@ -4,10 +4,18 @@
 # ===================================================================
 
 spring:
-  profiles:
-    active: dev
   application:
     name: RentHub
+  threads:
+    virtual:
+      enabled: false
+  output:
+    ansi:
+      enabled: always
+  profiles:
+    active: dev
+
+
 
 ---
 
@@ -90,7 +98,9 @@ logging:
     renthub.mapper: debug
   # 配置日志输出格式
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    #日志级别彩色
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %clr(%-5level) %logger{50} - %msg%n"
 
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
