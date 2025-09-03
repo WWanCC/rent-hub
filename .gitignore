@@ -17,10 +17,20 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/*
 *.iws
 *.iml
 *.ipr
+
+# 不要忽略 runConfigurations 目录，用于团队共享
+!.idea/runConfigurations/
+
+# 并且，不要忽略 vcs.xml 和 misc.xml
+!.idea/vcs.xml
+!.idea/misc.xml
+
+# 绝对要忽略 workspace.xml
+.idea/workspace.xml
 
 ### NetBeans ###
 /nbproject/private/

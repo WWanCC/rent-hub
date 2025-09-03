@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RentHubApplication-dev" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="RentHub" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="renthub.RentHubApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
