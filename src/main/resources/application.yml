@@ -3,6 +3,14 @@
 #所有通用配置，应当配置在这里，后面所有 on-profile独立继承这里的配置
 # ===================================================================
 
+#  Actuator相关配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 确保包含了 beans
+        include: health,info,beans,env
+
 server:
   port: 8080 # Spring Boot 项目运行的端口
 #  port: 9999 # Spring Boot 项目运行的端口
@@ -14,7 +22,7 @@ spring:
     name: RentHub
   threads:
     virtual:
-      enabled: true
+      enabled: false
   output:
     ansi:
       enabled: always
