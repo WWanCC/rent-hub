@@ -137,6 +137,56 @@ spring:
 ---
 
 
+# ===================================================================
+# ==         本地开发环境 (dev-embedded) - 使用内嵌服务         ==
+# ===================================================================
+# 这个 profile 用于完全脱离 Docker 和外部服务的本地开发
+
+spring:
+  config:
+    activate:
+      on-profile: dev-embedded
+
+  # 1. 配置 H2 数据源
+  datasource:
+    # 使用 H2 内存模式，并开启 MySQL 兼容模式
+    url: jdbc:h2:mem:devdb;MODE=MySQL;DB_CLOSE_DELAY=-1;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  # 2. 开启 H2 Web 控制台
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # 3. 启用 SQL 初始化，使用 schema.sql 和 data.sql
+  sql:
+    init:
+      mode: always
+      # 明确指定 SQL路径
+      schema-locations: classpath:H2-embedded-SqlScript/schema.sql
+  #      data-locations: classpath:H2-embedded-SqlScript/data.sql
+
+  # 4. Redis 配置 (重要！)
+  # 这里的配置会连接到由 EmbeddedRedisConfig 启动的那个内嵌 Redis
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+  # 5. 关闭 JPA 的 DDL 自动生成（如果你有 JPA 依赖）
+  # 因为我们使用 schema.sql 来控制表结构
+  jpa:
+    hibernate:
+      ddl-auto: none
+#禁用 Redis 健康检查
+management:
+  health:
+    redis:
+      enabled: false
+---
 
 # ===================================================================
 # ==         数据库重置环境 (db-reset) - 只用于数据库重置         ==
