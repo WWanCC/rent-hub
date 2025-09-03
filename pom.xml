@@ -201,10 +201,10 @@
 
 <!--        Testcontainers 集成测试container管理-->
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Spring for GraphQL Starter: 官方提供的 GraphQL 集成 -->
         <dependency>

@@ -10,8 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -26,13 +25,11 @@ import renthub.enums.NotifiedStatusEnum;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@Entity // <-- 【新增】告诉 JPA 这是一个实体类
 @TableName("rental_contract")
 public class RentalContract implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id // <-- 【新增】告诉 JPA 这是主键
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 

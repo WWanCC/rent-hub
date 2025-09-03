@@ -52,11 +52,11 @@ public class LogAspect {
         Object[] args = joinPoint.getArgs();
 
         // 打印更丰富的 HTTP 请求信息
-        log.info("======> [Controller] Request received: {} {} from IP: {}\n",
+        log.info("======> 【Controller】 Request received: {} {} from IP: {}\n",
                 request.getMethod(),
                 request.getRequestURL().toString(),
                 request.getRemoteAddr());
-        log.info("======> [Controller] Executing: {}.{}({})\n",
+        log.info("======> 【Controller】 Executing: {}.{}({})\n",
                 className,
                 methodName,
                 Arrays.toString(args));
