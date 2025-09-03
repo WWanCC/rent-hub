@@ -183,12 +183,23 @@
             <version>2.11.0</version>  <!-- 这是一个稳定且常用的版本 -->
         </dependency>
 
-        <!--h2嵌入式 数据库-->
+        <!--h2嵌入式 (模拟)数据库-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope> <!-- 这个依赖只在测试时有效，不会被打包到生产环境的 jar/war 中 -->
         </dependency>
+
+        <!-- 嵌入式 真实redis -->
+        <dependency>
+            <groupId>com.github.codemonstur</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>1.4.2</version> <!-- 请检查并使用最新版本 -->
+            <scope>test</scope> <!-- 关键：这个依赖只在测试时生效 -->
+        </dependency>
+
+
+<!--        Testcontainers 集成测试container管理-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
