@@ -30,6 +30,8 @@
         <java.version>17</java.version>
         <!--        <java.version>21</java.version>-->
 
+        <testcontainers.version>1.21.3</testcontainers.version>
+
         <!-- ================================================= -->
         <!--        所有第三方依赖的版本号，集中在这里管理         -->
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
@@ -57,11 +59,27 @@
         <!-- GraphQL -->
         <graphql-java-extended-scalars.version>21.0</graphql-java-extended-scalars.version>
 
+
         <!-- ================================================= -->
     </properties>
 
-<!--  多项目模块时  项目版本锁定-->
-    <dependencyManagement></dependencyManagement>
+    <!--  多项目模块时  项目版本锁定-->
+    <dependencyManagement>
+        <dependencies>
+            <!--
+               添加 Testcontainers BOM。
+               它负责管理所有 testcontainers-* 相关模块的版本，确保它们彼此兼容。
+               注意：它必须在 spring-boot-dependencies BOM 之后，以保障生产环境所使用的依赖版本一致
+            -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version> <!-- 引用你在 properties 中定义的版本 -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -209,6 +227,7 @@
             <artifactId>h2</artifactId>
             <!--            <scope>test</scope> &lt;!&ndash; 这个依赖只在测试时有效，常用于自动化测试，不会被打包到生产环境的 jar/war 中 &ndash;&gt;-->
             <scope>compile</scope>  <!--  用于本地内嵌服务使用-->
+            <!--            <scope>runtime</scope> 用于避免与testcontainer冲突-->
         </dependency>
 
         <!-- 嵌入式 真实redis -->
@@ -216,14 +235,40 @@
             <groupId>com.github.codemonstur</groupId>
             <artifactId>embedded-redis</artifactId>
             <version>${embedded-redis.version}</version> <!-- 请检查并使用最新版本 -->
-<!--            <scope>test</scope> &lt;!&ndash; 关键：这个依赖只在测试时生效 &ndash;&gt;-->
+            <!--            <scope>test</scope> &lt;!&ndash; 关键：这个依赖只在测试时生效 &ndash;&gt;-->
             <scope>compile</scope>
         </dependency>
 
 
         <!--        Testcontainers 用于集成测试container统一开启/销毁管理-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+            <!-- 版本由 spring-boot-starter-parent BOM 管理，无需指定 -->
+        </dependency>
 
+        <!-- 作用：提供 Testcontainers 的核心功能，与 Docker 交互 -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+            <!-- 版本由 testcontainers-bom 管理，无需指定 -->
+        </dependency>
 
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+            <!-- 版本由 testcontainers-bom 管理，无需指定 -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <scope>test</scope>
+            <!-- 版本由 testcontainers-bom 管理，无需指定 -->
+        </dependency>
 
 
         <!-- Spring for GraphQL Starter: 官方提供的 GraphQL 集成 -->
