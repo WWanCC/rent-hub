@@ -161,12 +161,12 @@ spring:
       enabled: true
       path: /h2-console
 
-  # 3. 启用 SQL 初始化，使用 schema.sql 和 data.sql
+  # 3. 启用 SQL 初始化，使用 schema2.sql 和 data.sql
   sql:
     init:
       mode: always
       # 明确指定 SQL路径
-      schema-locations: classpath:H2-embedded-SqlScript/schema.sql
+      schema-locations: classpath:H2-embedded-SqlScript/schema2.sql
   #      data-locations: classpath:H2-embedded-SqlScript/data.sql
 
   # 4. Redis 配置 (重要！)
@@ -177,7 +177,7 @@ spring:
       port: 6379
 
   # 5. 关闭 JPA 的 DDL 自动生成（如果你有 JPA 依赖）
-  # 因为我们使用 schema.sql 来控制表结构
+  # 因为我们使用 schema2.sql 来控制表结构
   jpa:
     hibernate:
       ddl-auto: none
