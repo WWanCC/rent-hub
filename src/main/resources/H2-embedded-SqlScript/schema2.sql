@@ -1,5 +1,5 @@
 -- =================================================================
---                 数据库表结构 (DDL)
+--                 数据库表结构 (DDL) - H2 兼容版
 -- =================================================================
 
 DROP TABLE IF EXISTS `emp`;
@@ -8,14 +8,14 @@ CREATE TABLE `emp`
     `id`         int      NOT NULL AUTO_INCREMENT,
     `username`   varchar(50)  DEFAULT NULL,
     `password`   varchar(100) DEFAULT NULL,
-    `real_name`  varchar(20)  DEFAULT NULL COMMENT '员工真名',
+    `real_name`  varchar(20)  DEFAULT NULL,
     `phone`      varchar(11)  DEFAULT NULL,
-    `role`       varchar(255) DEFAULT NULL COMMENT '分配角色',
+    `role`       varchar(255) DEFAULT NULL,
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `username` (`username`)
-) ENGINE = InnoDB COMMENT ='后台员工';
+);
 
 DROP TABLE IF EXISTS `emp_role`;
 CREATE TABLE `emp_role`
@@ -23,7 +23,7 @@ CREATE TABLE `emp_role`
     `emp_id`  int NOT NULL,
     `role_id` int NOT NULL,
     PRIMARY KEY (`emp_id`, `role_id`)
-) ENGINE = InnoDB COMMENT ='员工-角色中间表';
+);
 
 DROP TABLE IF EXISTS `house`;
 CREATE TABLE `house`
@@ -32,90 +32,90 @@ CREATE TABLE `house`
     `image`             varchar(255) DEFAULT NULL,
     `title`             varchar(100) DEFAULT NULL,
     `region_id`         int          DEFAULT NULL,
-    `region_name`       varchar(10)    NOT NULL COMMENT '转单表查询',
-    `address_detail`    varchar(255)   NOT NULL COMMENT '详细地址',
-    `price_per_month`   decimal(10, 2) NOT NULL COMMENT '每月租金',
-    `area`              int            NOT NULL COMMENT '房源面积',
-    `layout`            int            NOT NULL COMMENT '房间数量',
-    `status`            int            NOT NULL COMMENT '0下架，1待租，2签约中， 3已签约',
-    `created_by_emp_id` int            NOT NULL COMMENT '创建房源的员工id',
+    `region_name`       varchar(10)    NOT NULL,
+    `address_detail`    varchar(255)   NOT NULL,
+    `price_per_month`   decimal(10, 2) NOT NULL,
+    `area`              int            NOT NULL,
+    `layout`            int            NOT NULL,
+    `status`            int            NOT NULL,
+    `created_by_emp_id` int            NOT NULL,
     `created_at`        datetime       NOT NULL,
     `updated_at`        datetime       NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB COMMENT ='房源';
+);
 
 DROP TABLE IF EXISTS `house_tag`;
 CREATE TABLE `house_tag`
 (
-    `house_id` int NOT NULL COMMENT '房源表 house.id',
-    `tag_id`   int NOT NULL COMMENT '标签表 tag.id',
+    `house_id` int NOT NULL,
+    `tag_id`   int NOT NULL,
     PRIMARY KEY (`house_id`, `tag_id`)
-) ENGINE = InnoDB COMMENT ='房源_标签中间表';
+);
 
 DROP TABLE IF EXISTS `notification`;
 CREATE TABLE `notification`
 (
     `id`              int          NOT NULL AUTO_INCREMENT,
-    `user_id`         int         DEFAULT NULL COMMENT '引用user表逻辑外键',
-    `emp_id`          int         DEFAULT NULL COMMENT '引用emp表逻辑外键',
-    `title`           varchar(100) NOT NULL COMMENT '通知标题',
-    `content`         varchar(255) NOT NULL COMMENT '通知内容   ',
-    `created_at`      datetime    DEFAULT (now()) COMMENT '  创建时间 ',
-    `delivery_status` varchar(20) DEFAULT NULL COMMENT '消息投递状态(引入MQ队列后)默认PENDING,把信息插入通知表后,立即发送给CB端,之后修改为sent状态',
+    `user_id`         int         DEFAULT NULL,
+    `emp_id`          int         DEFAULT NULL,
+    `title`           varchar(100) NOT NULL,
+    `content`         varchar(255) NOT NULL,
+    `created_at`      datetime    DEFAULT (now()),
+    `delivery_status` varchar(20) DEFAULT NULL,
     `user_is_read`    tinyint     DEFAULT '0',
     `emp_is_read`     tinyint     DEFAULT '0',
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
+);
 
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission`
 (
     `id`             int         NOT NULL AUTO_INCREMENT,
-    `name`           varchar(20) NOT NULL COMMENT '权限中文名',
-    `permission_key` varchar(50) NOT NULL COMMENT '权限标识',
+    `name`           varchar(20) NOT NULL,
+    `permission_key` varchar(50) NOT NULL,
     `created_at`     datetime    NOT NULL,
     `updated_at`     datetime    NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB COMMENT ='权限表';
+);
 
 DROP TABLE IF EXISTS `region`;
 CREATE TABLE `region`
 (
     `id`        int         NOT NULL AUTO_INCREMENT,
-    `name`      varchar(10) NOT NULL COMMENT '地区名称',
-    `parent_id` int DEFAULT NULL COMMENT '上级地区id （现在以 parent_id:广州）暂无其他城市',
+    `name`      varchar(10) NOT NULL,
+    `parent_id` int DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_region_name` (`name`)
-) ENGINE = InnoDB COMMENT ='地区表 ';
+);
 
 DROP TABLE IF EXISTS `rental_contract`;
 CREATE TABLE `rental_contract`
 (
     `id`                 int     NOT NULL AUTO_INCREMENT,
-    `contract_no`        varchar(50)    DEFAULT NULL COMMENT '合同编号, 唯一,带特殊格式的字符串',
-    `house_id`           int            DEFAULT NULL COMMENT '外键, 关联 house_.id',
-    `user_id`            int            DEFAULT NULL COMMENT '外键, 关联 user.id',
-    `emp_id`             int            DEFAULT NULL COMMENT '外键, 关联 emp.id',
-    `final_price`        decimal(10, 2) DEFAULT NULL COMMENT '实际月租金',
-    `start_date`         date           DEFAULT NULL COMMENT '合同开始日期',
-    `end_date`           date           DEFAULT NULL COMMENT '合同结束日期',
-    `status`             tinyint        DEFAULT NULL COMMENT '合同状态 (1:进行中, 2:签约完成)',
-    `created_at`         datetime       DEFAULT NULL COMMENT '签约时间',
-    `is_expiry_notified` tinyint NOT NULL COMMENT '是否已发送到期提醒 (0:未发送, 1:已发送)',
+    `contract_no`        varchar(50)    DEFAULT NULL,
+    `house_id`           int            DEFAULT NULL,
+    `user_id`            int            DEFAULT NULL,
+    `emp_id`             int            DEFAULT NULL,
+    `final_price`        decimal(10, 2) DEFAULT NULL,
+    `start_date`         date           DEFAULT NULL,
+    `end_date`           date           DEFAULT NULL,
+    `status`             tinyint        DEFAULT NULL,
+    `created_at`         datetime       DEFAULT NULL,
+    `is_expiry_notified` tinyint NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `rental_contract_pk` (`contract_no`)
-) ENGINE = InnoDB COMMENT ='租赁合同表';
+);
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`
 (
     `id`         int         NOT NULL AUTO_INCREMENT,
-    `name`       varchar(20) NOT NULL COMMENT '角色中文名',
-    `role_key`   varchar(50) NOT NULL COMMENT '角色标识',
+    `name`       varchar(20) NOT NULL,
+    `role_key`   varchar(50) NOT NULL,
     `created_at` datetime    NOT NULL,
     `updated_at` datetime    NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB COMMENT ='角色表';
+);
 
 DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission`
@@ -123,62 +123,62 @@ CREATE TABLE `role_permission`
     `role_id`       int NOT NULL,
     `permission_id` int NOT NULL,
     PRIMARY KEY (`permission_id`, `role_id`)
-) ENGINE = InnoDB COMMENT ='角色-权限中间表';
+);
 
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu`
 (
     `id`             int         NOT NULL AUTO_INCREMENT,
-    `parent_id`      int          DEFAULT NULL COMMENT '父菜单ID,用于构建树结构',
-    `permission_key` int         NOT NULL COMMENT '权限标识',
-    `name`           varchar(20) NOT NULL COMMENT '菜单项名',
-    `path`           varchar(255) DEFAULT NULL COMMENT '前端路由路径',
-    `component`      varchar(255) DEFAULT NULL COMMENT '前端组件路径',
-    `icon`           int          DEFAULT NULL COMMENT '菜单图标的类名或路径',
-    `order_num`      int         NOT NULL COMMENT '控制显示排序',
+    `parent_id`      int          DEFAULT NULL,
+    `permission_key` int         NOT NULL,
+    `name`           varchar(20) NOT NULL,
+    `path`           varchar(255) DEFAULT NULL,
+    `component`      varchar(255) DEFAULT NULL,
+    `icon`           int          DEFAULT NULL,
+    `order_num`      int         NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB COMMENT ='管理系统菜单';
+);
 
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag`
 (
     `id`   int         NOT NULL AUTO_INCREMENT,
-    `name` varchar(15) NOT NULL COMMENT '标签名',
+    `name` varchar(15) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_tag_name` (`name`)
-) ENGINE = InnoDB COMMENT ='房源标签表';
+);
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
     `id`         int      NOT NULL AUTO_INCREMENT,
-    `phone`      char(11) NOT NULL COMMENT '唯一手机号-作为登录用户名',
-    `password`   varchar(100) DEFAULT NULL COMMENT '登录密码',
+    `phone`      char(11) NOT NULL,
+    `password`   varchar(100) DEFAULT NULL,
     `created_at` datetime     DEFAULT NULL,
     `updated_at` datetime     DEFAULT NULL,
-    `status`     int      NOT NULL COMMENT '0已注销，1正常',
+    `status`     int      NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_phone` (`phone`)
-) ENGINE = InnoDB COMMENT ='用户表';
+);
 
 DROP TABLE IF EXISTS `user_detail`;
 CREATE TABLE `user_detail`
 (
     `user_id`          int        NOT NULL,
-    `identity_card_id` char(18)   NOT NULL COMMENT '用户身份证号',
-    `real_name`        varchar(6) NOT NULL COMMENT '用户真实姓名',
+    `identity_card_id` char(18)   NOT NULL,
+    `real_name`        varchar(6) NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `user_detail_pk` (`identity_card_id`)
-) ENGINE = InnoDB COMMENT ='用户详细信息';
+);
 
 DROP TABLE IF EXISTS `user_favorite`;
 CREATE TABLE `user_favorite`
 (
-    `user_id`    int      NOT NULL COMMENT '用户表 user.id',
-    `house_id`   int      NOT NULL COMMENT '房源表 house.id',
+    `user_id`    int      NOT NULL,
+    `house_id`   int      NOT NULL,
     `created_at` datetime NOT NULL,
-    PRIMARY KEY (`user_id`, `house_id`) COMMENT '联合主键,确保一个用户不能收藏多次同一个房源'
-) ENGINE = InnoDB COMMENT ='用户收藏表';
+    PRIMARY KEY (`user_id`, `house_id`)
+);
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role`
@@ -186,7 +186,7 @@ CREATE TABLE `user_role`
     `user_id` int NOT NULL,
     `role_id` int NOT NULL,
     PRIMARY KEY (`user_id`, `role_id`)
-) ENGINE = InnoDB COMMENT ='用户-角色中间表';
+);
 
 
 -- =================================================================
