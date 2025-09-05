@@ -34,7 +34,13 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
+#配置后会将所有为null属性，不序列化，可能会影响api清晰度增加沟通成本以及调试成本，前端大量非空判断
+#  jackson:
+#    default-property-inclusion: non_null
 
+#@JsonView 考虑全局vo组合，局部使用@JsonView
+
+#基于DDD的思想，即使在单模块的项目中，也应该以包名划分业务vo
 
 #mybatis配置
 mybatis-plus:
